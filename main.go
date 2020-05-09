@@ -13,6 +13,7 @@ import (
 )
 
 const float32Size = 4
+const uint32Size = 4
 const windowWidth = 800
 const windowHeight = 600
 
@@ -107,10 +108,25 @@ func main() {
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
 
+	var vertices []float32
+	var indices []uint32
+	var objects []Object
+	objects = append(objects, NewCube(1.0))
+
+	for _, o := range objects {
+		vertices = append(vertices, o.Vertices()...)
+		indices = append(indices, o.Indices()...)
+	}
+
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*float32Size, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*float32Size, gl.Ptr(vertices), gl.STATIC_DRAW)
+
+	var ebo uint32
+	gl.GenBuffers(1, &ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*uint32Size, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
@@ -157,7 +173,8 @@ func main() {
 		projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 		gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-		gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
+		gl.DrawElements(gl.TRIANGLES, int32(len(indices)), gl.UNSIGNED_INT, nil)
+		// gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 
 		// Maintenance
 		window.SwapBuffers()
