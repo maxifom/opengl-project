@@ -7,10 +7,11 @@ package main // import "github.com/go-gl/example/gl41core-cube"
 
 import (
 	"fmt"
-	"go/build"
 	"image"
 	"image/draw"
+	_ "image/jpeg"
 	_ "image/png"
+	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
@@ -21,6 +22,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+const float32Size = 4
 const windowWidth = 800
 const windowHeight = 600
 
@@ -30,6 +32,10 @@ func init() {
 }
 
 func main() {
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 6}, mgl32.Vec3{0, 1, 0})
+	var lastXPosition *float64
+	var lastYPosition *float64
+
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to initialize glfw:", err)
 	}
@@ -45,6 +51,25 @@ func main() {
 		panic(err)
 	}
 	window.MakeContextCurrent()
+	window.SetFramebufferSizeCallback(func(w *glfw.Window, width int, height int) {
+		gl.Viewport(0, 0, int32(width), int32(height))
+	})
+	window.SetCursorPosCallback(func(w *glfw.Window, xpos float64, ypos float64) {
+		if lastXPosition == nil {
+			lastXPosition = &xpos
+			lastYPosition = &ypos
+		}
+
+		xOffset := xpos - *lastXPosition
+		yOffset := *lastYPosition - ypos
+
+		lastXPosition = &xpos
+		lastYPosition = &ypos
+		c.ProcessMouseMovement(float32(xOffset), float32(yOffset), true)
+	})
+	window.SetScrollCallback(func(w *glfw.Window, xoff float64, yoff float64) {
+		c.ProcessMouseScroll(float32(yoff))
+	})
 
 	// Initialize Glow
 	if err := gl.Init(); err != nil {
@@ -55,6 +80,8 @@ func main() {
 	fmt.Println("OpenGL version", version)
 
 	// Configure the vertex and fragment shaders
+	vertexShader := ReadShaderFromFile("shaders/vertex")
+	fragmentShader := ReadShaderFromFile("shaders/fragment")
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
 		panic(err)
@@ -62,13 +89,17 @@ func main() {
 
 	gl.UseProgram(program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(windowWidth)/windowHeight, 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 	projectionUniform := gl.GetUniformLocation(program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-	camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+	// camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+
+	// DEFAULTS FROM c++
+
 	cameraUniform := gl.GetUniformLocation(program, gl.Str("camera\x00"))
-	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
+	mat4 := c.GetViewMatrix()
+	gl.UniformMatrix4fv(cameraUniform, 1, false, &mat4[0])
 
 	model := mgl32.Ident4()
 	modelUniform := gl.GetUniformLocation(program, gl.Str("model\x00"))
@@ -80,7 +111,7 @@ func main() {
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	texture, err := newTexture("square.png")
+	texture, err := newTexture("tank.jpg")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -93,15 +124,15 @@ func main() {
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*float32Size, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
-	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
+	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*float32Size, gl.PtrOffset(0))
 
 	texCoordAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertTexCoord\x00")))
 	gl.EnableVertexAttribArray(texCoordAttrib)
-	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
+	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*float32Size, gl.PtrOffset(3*float32Size))
 
 	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
@@ -119,6 +150,8 @@ func main() {
 		elapsed := time - previousTime
 		previousTime = time
 
+		ProcessInput(&c, window, float32(elapsed))
+
 		angle += elapsed
 		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
 
@@ -126,10 +159,17 @@ func main() {
 		gl.UseProgram(program)
 		gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
+		mat4 := c.GetViewMatrix()
+		// gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
+		gl.UniformMatrix4fv(cameraUniform, 1, false, &mat4[0])
+
 		gl.BindVertexArray(vao)
 
 		gl.ActiveTexture(gl.TEXTURE0)
 		gl.BindTexture(gl.TEXTURE_2D, texture)
+
+		projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
+		gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
 		gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 
@@ -208,7 +248,7 @@ func newTexture(file string) (uint32, error) {
 	}
 
 	rgba := image.NewRGBA(img.Bounds())
-	if rgba.Stride != rgba.Rect.Size().X*4 {
+	if rgba.Stride != rgba.Rect.Size().X*float32Size {
 		return 0, fmt.Errorf("unsupported stride")
 	}
 	draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
@@ -234,38 +274,6 @@ func newTexture(file string) (uint32, error) {
 
 	return texture, nil
 }
-
-var vertexShader = `
-#version 330
-
-uniform mat4 projection;
-uniform mat4 camera;
-uniform mat4 model;
-
-in vec3 vert;
-in vec2 vertTexCoord;
-
-out vec2 fragTexCoord;
-
-void main() {
-    fragTexCoord = vertTexCoord;
-    gl_Position = projection * camera * model * vec4(vert, 1);
-}
-` + "\x00"
-
-var fragmentShader = `
-#version 330
-
-uniform sampler2D tex;
-
-in vec2 fragTexCoord;
-
-out vec4 outputColor;
-
-void main() {
-    outputColor = texture(tex, fragTexCoord);
-}
-` + "\x00"
 
 var cubeVertices = []float32{
 	//  X, Y, Z, U, V
@@ -318,25 +326,28 @@ var cubeVertices = []float32{
 	1.0, 1.0, 1.0, 0.0, 1.0,
 }
 
-// Set the working directory to the root of Go package, so that its assets can be accessed.
-func init() {
-	dir, err := importPathToDir("github.com/go-gl/example/gl41core-cube")
+func ReadShaderFromFile(filename string) string {
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
+		log.Panicf("failed to read shader from file %s: %s", filename, err)
 	}
-	err = os.Chdir(dir)
-	if err != nil {
-		log.Panicln("os.Chdir:", err)
-	}
+
+	return string(bytes)
 }
 
-// importPathToDir resolves the absolute path from importPath.
-// There doesn't need to be a valid Go package inside that import path,
-// but the directory must exist.
-func importPathToDir(importPath string) (string, error) {
-	p, err := build.Import(importPath, "", build.FindOnly)
-	if err != nil {
-		return "", err
+func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32) {
+	if window.GetKey(glfw.KeyEscape) == glfw.Press {
+		window.SetShouldClose(true)
 	}
-	return p.Dir, nil
+
+	if window.GetKey(glfw.KeyW) == glfw.Press {
+		camera.ProcessKeyboard(FORWARD, deltaTime)
+	} else if window.GetKey(glfw.KeyS) == glfw.Press {
+		camera.ProcessKeyboard(BACKWARD, deltaTime)
+	} else if window.GetKey(glfw.KeyA) == glfw.Press {
+		camera.ProcessKeyboard(LEFT, deltaTime)
+	} else if window.GetKey(glfw.KeyD) == glfw.Press {
+		camera.ProcessKeyboard(RIGHT, deltaTime)
+	}
+
 }
