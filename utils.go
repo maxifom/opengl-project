@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
+	"log"
 	"os"
 	"strings"
 
@@ -85,7 +86,9 @@ func newTexture(file string) (uint32, error) {
 	return texture, nil
 }
 
-func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32) {
+var currentObject = 0
+
+func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, objects []Object) {
 	if window.GetKey(glfw.KeyEscape) == glfw.Press {
 		window.SetShouldClose(true)
 	}
@@ -98,7 +101,33 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32) {
 		camera.ProcessKeyboard(LEFT, deltaTime)
 	} else if window.GetKey(glfw.KeyD) == glfw.Press {
 		camera.ProcessKeyboard(RIGHT, deltaTime)
+	} else if window.GetKey(glfw.KeyKPAdd) == glfw.Press {
+		if currentObject+1 == len(objects) {
+			currentObject = 0
+		} else {
+			currentObject++
+		}
+		log.Println(currentObject)
+	} else if window.GetKey(glfw.KeyQ) == glfw.Press {
+		camera.ProcessKeyboard(LEFT90, deltaTime)
+	} else if window.GetKey(glfw.KeyE) == glfw.Press {
+		camera.ProcessKeyboard(RIGHT90, deltaTime)
 	}
+
+	if window.GetKey(glfw.KeyUp) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0.1, 0}))
+	} else if window.GetKey(glfw.KeyDown) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, -0.1, 0}))
+	} else if window.GetKey(glfw.KeyLeft) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{-0.1, 0, 0}))
+	} else if window.GetKey(glfw.KeyRight) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0.1, 0, 0}))
+	} else if window.GetKey(glfw.KeyKP7) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, -0.1}))
+	} else if window.GetKey(glfw.KeyKP9) == glfw.Press {
+		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, 0.1}))
+	}
+
 }
 
 func TranslateMat4Vec3(mat4 mgl32.Mat4, vec3 mgl32.Vec3) mgl32.Mat4 {

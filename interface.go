@@ -7,4 +7,5 @@ import (
 type Object interface {
 	Vertices() []float32
 	Position() mgl32.Vec3
+	SetPosition(vec3 mgl32.Vec3)
 }

@@ -7,7 +7,7 @@ type Cube struct {
 	vertices []float32
 }
 
-func NewCube(a float32, pos mgl32.Vec3) Cube {
+func NewCube(a float32, pos mgl32.Vec3) *Cube {
 	// TODO: Fix texture
 	vertices := []float32{
 		//  X, Y, Z, U, V
@@ -60,13 +60,16 @@ func NewCube(a float32, pos mgl32.Vec3) Cube {
 		a, a, a, 0.0, 1.0,
 	}
 
-	return Cube{vertices: vertices, position: pos}
+	return &Cube{vertices: vertices, position: pos}
 }
 
-func (c Cube) Vertices() []float32 {
+func (c *Cube) Vertices() []float32 {
 	return c.vertices
 }
 
-func (c Cube) Position() mgl32.Vec3 {
+func (c *Cube) Position() mgl32.Vec3 {
 	return c.position
+}
+func (c *Cube) SetPosition(pos mgl32.Vec3) {
+	c.position = pos
 }

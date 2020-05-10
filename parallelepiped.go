@@ -7,7 +7,7 @@ type Parallelepiped struct {
 	position mgl32.Vec3
 }
 
-func NewParallelepiped(a, b, c float32, pos mgl32.Vec3) Parallelepiped {
+func NewParallelepiped(a, b, c float32, pos mgl32.Vec3) *Parallelepiped {
 	vertices := []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -59,13 +59,17 @@ func NewParallelepiped(a, b, c float32, pos mgl32.Vec3) Parallelepiped {
 		a, b, c, 0.0, 1.0,
 	}
 
-	return Parallelepiped{vertices: vertices, position: pos}
+	return &Parallelepiped{vertices: vertices, position: pos}
 }
 
-func (c Parallelepiped) Vertices() []float32 {
+func (c *Parallelepiped) Vertices() []float32 {
 	return c.vertices
 }
 
-func (c Parallelepiped) Position() mgl32.Vec3 {
+func (c *Parallelepiped) Position() mgl32.Vec3 {
 	return c.position
+}
+
+func (c *Parallelepiped) SetPosition(pos mgl32.Vec3) {
+	c.position = pos
 }

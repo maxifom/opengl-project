@@ -110,7 +110,7 @@ func main() {
 
 	var objects []Object
 	objects = append(objects, NewParallelepiped(3, 4, 5, mgl32.Vec3{0, 0, 0}))
-	objects = append(objects, NewParallelepiped(3, 2, 2, mgl32.Vec3{0, 4, 0}))
+	objects = append(objects, NewParallelepiped(2, 3, 4, mgl32.Vec3{4, 0, 0}))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -140,7 +140,7 @@ func main() {
 		elapsed := time - previousTime
 		previousTime = time
 
-		ProcessInput(&c, window, float32(elapsed))
+		ProcessInput(&c, window, float32(elapsed), objects)
 
 		angle += elapsed
 		angle = 0
@@ -173,5 +173,4 @@ func main() {
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
-
 }

@@ -13,6 +13,9 @@ const (
 	BACKWARD = "backward"
 	LEFT     = "left"
 	RIGHT    = "right"
+
+	LEFT90  = "left_90"
+	RIGHT90 = "right_90"
 )
 
 type Camera struct {
@@ -53,6 +56,10 @@ func (c *Camera) ProcessKeyboard(direction CameraDirection, deltaTime float32) {
 		c.Position = c.Position.Sub(c.Right.Mul(velocity))
 	case RIGHT:
 		c.Position = c.Position.Add(c.Right.Mul(velocity))
+	case LEFT90:
+		c.Yaw -= 90
+	case RIGHT90:
+		c.Yaw += 90
 	default:
 		panic("invalid direction " + direction)
 	}
