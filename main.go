@@ -109,13 +109,12 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var vertices []float32
-	var indices []uint32
 	var objects []Object
-	objects = append(objects, NewCube(1.0))
+	// objects = append(objects, NewCube(1.0))
+	objects = append(objects, NewParallelepiped(3, 4, 5))
 
 	for _, o := range objects {
 		vertices = append(vertices, o.Vertices()...)
-		indices = append(indices, o.Indices()...)
 	}
 
 	var vbo uint32
@@ -123,10 +122,10 @@ func main() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*float32Size, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	var ebo uint32
-	gl.GenBuffers(1, &ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*uint32Size, gl.Ptr(indices), gl.STATIC_DRAW)
+	// var ebo uint32
+	// gl.GenBuffers(1, &ebo)
+	// gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
+	// gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*uint32Size, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
@@ -155,6 +154,7 @@ func main() {
 		ProcessInput(&c, window, float32(elapsed))
 
 		angle += elapsed
+		angle = 0
 		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
 
 		// Render
@@ -173,8 +173,8 @@ func main() {
 		projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 		gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-		gl.DrawElements(gl.TRIANGLES, int32(len(indices)), gl.UNSIGNED_INT, nil)
-		// gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
+		// gl.DrawElements(gl.TRIANGLES, int32(len(indices)), gl.UNSIGNED_INT, nil)
+		gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)))
 
 		// Maintenance
 		window.SwapBuffers()

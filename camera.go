@@ -28,7 +28,7 @@ func NewCamera(yaw float32, pitch float32, position mgl32.Vec3, up mgl32.Vec3) C
 		Position:         position,
 		WorldUp:          up,
 		Front:            mgl32.Vec3{0, 0, -1},
-		MovementSpeed:    2.5,
+		MovementSpeed:    5,
 		MouseSensitivity: 0.1,
 		Zoom:             45.0,
 	}
