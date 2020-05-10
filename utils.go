@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func newProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
@@ -98,4 +99,8 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32) {
 	} else if window.GetKey(glfw.KeyD) == glfw.Press {
 		camera.ProcessKeyboard(RIGHT, deltaTime)
 	}
+}
+
+func TranslateMat4Vec3(mat4 mgl32.Mat4, vec3 mgl32.Vec3) mgl32.Mat4 {
+	return mat4.Mul4(mgl32.Translate3D(vec3[0], vec3[1], vec3[2]))
 }

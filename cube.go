@@ -1,10 +1,13 @@
 package main
 
+import "github.com/go-gl/mathgl/mgl32"
+
 type Cube struct {
+	position mgl32.Vec3
 	vertices []float32
 }
 
-func NewCube(a float32) Cube {
+func NewCube(a float32, pos mgl32.Vec3) Cube {
 	// TODO: Fix texture
 	vertices := []float32{
 		//  X, Y, Z, U, V
@@ -57,9 +60,13 @@ func NewCube(a float32) Cube {
 		a, a, a, 0.0, 1.0,
 	}
 
-	return Cube{vertices: vertices}
+	return Cube{vertices: vertices, position: pos}
 }
 
 func (c Cube) Vertices() []float32 {
 	return c.vertices
+}
+
+func (c Cube) Position() mgl32.Vec3 {
+	return c.position
 }
