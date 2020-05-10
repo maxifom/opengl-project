@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 20}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 75, mgl32.Vec3{0, -15, 4}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -109,8 +109,9 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(3, 4, 5, mgl32.Vec3{0, 0, 0}))
-	objects = append(objects, NewParallelepiped(2, 3, 4, mgl32.Vec3{4, 0, 0}))
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}))
+	objects = append(objects, NewParallelepiped(4, 3, 1, mgl32.Vec3{0, 0, 2}))
+	objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 3}))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -129,7 +130,6 @@ func main() {
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
-	angle := 0.0
 	previousTime := glfw.GetTime()
 
 	for !window.ShouldClose() {
@@ -141,10 +141,6 @@ func main() {
 		previousTime = time
 
 		ProcessInput(&c, window, float32(elapsed), objects)
-
-		angle += elapsed
-		angle = 0
-		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
 
 		// Render
 		gl.UseProgram(program)

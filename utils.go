@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -87,6 +88,7 @@ func newTexture(file string) (uint32, error) {
 }
 
 var currentObject = 0
+var lastTimeChangedCurrentObject = time.Time{}
 
 func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, objects []Object) {
 	if window.GetKey(glfw.KeyEscape) == glfw.Press {
@@ -101,17 +103,29 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 		camera.ProcessKeyboard(LEFT, deltaTime)
 	} else if window.GetKey(glfw.KeyD) == glfw.Press {
 		camera.ProcessKeyboard(RIGHT, deltaTime)
+	} else if window.GetKey(glfw.KeyKP1) == glfw.Press {
+		camera.ProcessKeyboard(ZMINUS, deltaTime)
+	} else if window.GetKey(glfw.KeyKP3) == glfw.Press {
+		camera.ProcessKeyboard(ZPLUS, deltaTime)
+	} else if window.GetKey(glfw.KeyKP2) == glfw.Press {
+		camera.ProcessKeyboard(YMINUS, deltaTime)
+	} else if window.GetKey(glfw.KeyKP4) == glfw.Press {
+		camera.ProcessKeyboard(XMINUS, deltaTime)
+	} else if window.GetKey(glfw.KeyKP6) == glfw.Press {
+		camera.ProcessKeyboard(XPLUS, deltaTime)
+	} else if window.GetKey(glfw.KeyKP8) == glfw.Press {
+		camera.ProcessKeyboard(YPLUS, deltaTime)
 	} else if window.GetKey(glfw.KeyKPAdd) == glfw.Press {
+		if time.Since(lastTimeChangedCurrentObject) < 300*time.Millisecond {
+			return
+		}
 		if currentObject+1 == len(objects) {
 			currentObject = 0
 		} else {
 			currentObject++
 		}
 		log.Println(currentObject)
-	} else if window.GetKey(glfw.KeyQ) == glfw.Press {
-		camera.ProcessKeyboard(LEFT90, deltaTime)
-	} else if window.GetKey(glfw.KeyE) == glfw.Press {
-		camera.ProcessKeyboard(RIGHT90, deltaTime)
+		lastTimeChangedCurrentObject = time.Now()
 	}
 
 	if window.GetKey(glfw.KeyUp) == glfw.Press {
