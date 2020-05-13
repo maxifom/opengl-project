@@ -5,9 +5,10 @@ import "github.com/go-gl/mathgl/mgl32"
 type Cube struct {
 	position mgl32.Vec3
 	vertices []float32
+	rotation float32
 }
 
-func NewCube(a float32, pos mgl32.Vec3) *Cube {
+func NewCube(a float32, pos mgl32.Vec3, rotation float32) *Cube {
 	// TODO: Fix texture
 	vertices := []float32{
 		//  X, Y, Z, U, V
@@ -60,7 +61,7 @@ func NewCube(a float32, pos mgl32.Vec3) *Cube {
 		a, a, a, 0.0, 1.0,
 	}
 
-	return &Cube{vertices: vertices, position: pos}
+	return &Cube{vertices: vertices, position: pos, rotation: rotation}
 }
 
 func (c *Cube) Vertices() []float32 {
@@ -72,4 +73,12 @@ func (c *Cube) Position() mgl32.Vec3 {
 }
 func (c *Cube) SetPosition(pos mgl32.Vec3) {
 	c.position = pos
+}
+
+func (c *Cube) Rotation() float32 {
+	return c.rotation
+}
+
+func (c *Cube) SetRotation(f float32) {
+	c.rotation = f
 }

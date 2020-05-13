@@ -97,25 +97,35 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 
 	if window.GetKey(glfw.KeyW) == glfw.Press {
 		camera.ProcessKeyboard(FORWARD, deltaTime)
-	} else if window.GetKey(glfw.KeyS) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyS) == glfw.Press {
 		camera.ProcessKeyboard(BACKWARD, deltaTime)
-	} else if window.GetKey(glfw.KeyA) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyA) == glfw.Press {
 		camera.ProcessKeyboard(LEFT, deltaTime)
-	} else if window.GetKey(glfw.KeyD) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyD) == glfw.Press {
 		camera.ProcessKeyboard(RIGHT, deltaTime)
-	} else if window.GetKey(glfw.KeyKP1) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP1) == glfw.Press {
 		camera.ProcessKeyboard(ZMINUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKP3) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP3) == glfw.Press {
 		camera.ProcessKeyboard(ZPLUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKP2) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP2) == glfw.Press {
 		camera.ProcessKeyboard(YMINUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKP4) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP4) == glfw.Press {
 		camera.ProcessKeyboard(XMINUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKP6) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP6) == glfw.Press {
 		camera.ProcessKeyboard(XPLUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKP8) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP8) == glfw.Press {
 		camera.ProcessKeyboard(YPLUS, deltaTime)
-	} else if window.GetKey(glfw.KeyKPAdd) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKPAdd) == glfw.Press {
 		if time.Since(lastTimeChangedCurrentObject) < 300*time.Millisecond {
 			return
 		}
@@ -130,18 +140,30 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 
 	if window.GetKey(glfw.KeyUp) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0.1, 0}))
-	} else if window.GetKey(glfw.KeyDown) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyDown) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, -0.1, 0}))
-	} else if window.GetKey(glfw.KeyLeft) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyLeft) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{-0.1, 0, 0}))
-	} else if window.GetKey(glfw.KeyRight) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyRight) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0.1, 0, 0}))
-	} else if window.GetKey(glfw.KeyKP7) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP7) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, -0.1}))
-	} else if window.GetKey(glfw.KeyKP9) == glfw.Press {
+	}
+	if window.GetKey(glfw.KeyKP9) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, 0.1}))
 	}
 
+	if window.GetKey(glfw.KeyE) == glfw.Press {
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 0.1)
+	}
+
+	if window.GetKey(glfw.KeyQ) == glfw.Press {
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() - 0.1)
+	}
 }
 
 func TranslateMat4Vec3(mat4 mgl32.Mat4, vec3 mgl32.Vec3) mgl32.Mat4 {

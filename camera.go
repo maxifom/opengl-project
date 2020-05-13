@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -98,7 +97,6 @@ func (c *Camera) ProcessMouseMovement(xOffset, yOffset float32, constrainPitch b
 	}
 
 	c.UpdateCameraVectors()
-	log.Println(c)
 }
 
 func (c *Camera) ProcessMouseScroll(yOffset float32) {

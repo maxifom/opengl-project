@@ -109,9 +109,10 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}))
-	objects = append(objects, NewParallelepiped(4, 3, 1, mgl32.Vec3{0, 0, 2}))
-	objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 3}))
+	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 90))
+	//objects = append(objects, NewParallelepiped(4, 3, 1, mgl32.Vec3{0, 0, 2}, 0))
+	objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 0}, 0))
+	//objects = append(objects, NewCyllinder(1, 1, 2, 36, 8, 0, mgl32.Vec3{0, 0, 0}))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -148,6 +149,7 @@ func main() {
 			v := object.Vertices()
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
+			model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
 			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
