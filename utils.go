@@ -158,11 +158,11 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 	}
 
 	if window.GetKey(glfw.KeyE) == glfw.Press {
-		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 0.1)
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 1)
 	}
 
 	if window.GetKey(glfw.KeyQ) == glfw.Press {
-		objects[currentObject].SetRotation(objects[currentObject].Rotation() - 0.1)
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() - 1)
 	}
 }
 

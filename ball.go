@@ -13,13 +13,13 @@ type Ball struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewBall() *Ball {
+func NewBall(r, db, dl float64, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Ball {
 	var vertices []float32
 	var indices []uint32
 
-	var r float64 = 1.0
-	var db float64 = 5
-	var dl float64 = 5
+	// b - широта от -90 до 90
+	// l - долгота от 0 до 360
+	// db, dl - шаги широты и долготы
 
 	// TODO: image texture will not work, only solid color (в книге описано как сделать)
 	for b := float64(-90); b < 90; b += db {
@@ -70,9 +70,9 @@ func NewBall() *Ball {
 	return &Ball{
 		vertices:     vertices,
 		indices:      indices,
-		rotation:     0,
-		position:     mgl32.Vec3{},
-		rotationAxes: mgl32.Vec3{0, 1, 0},
+		rotation:     rotation,
+		position:     pos,
+		rotationAxes: rotationAxes,
 	}
 }
 

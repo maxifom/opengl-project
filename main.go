@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 5}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -109,9 +109,9 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0))
-	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 8, 0}, 0))
-	objects = append(objects, NewBall())
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	//objects = append(objects, NewCyllinder())
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -156,9 +156,12 @@ func main() {
 			model = mgl32.Ident4()
 			// Кручение вокруг оси OY
 			// TODO: динамическая ось раскомментить ротейт и позицион
-			model = mgl32.HomogRotate3D(object.Rotation(), object.RotationAxes())
+			// TODO: rotation зависит от позиции у куба
 
-			// Перемещение на позицию в мире
+			rotationAngle := mgl32.DegToRad(object.Rotation())
+			model = mgl32.HomogRotate3D(rotationAngle, object.RotationAxes())
+
+			// Перемещение на позицию в мире, перемещать до ротации нельзя
 			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
@@ -172,7 +175,7 @@ func main() {
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 			//TODO: DEBUG
-			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+			//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 			gl.DrawElements(gl.TRIANGLES, int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 

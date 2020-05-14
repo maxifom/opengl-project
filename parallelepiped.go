@@ -3,13 +3,14 @@ package main
 import "github.com/go-gl/mathgl/mgl32"
 
 type Parallelepiped struct {
-	vertices []float32
-	indices  []uint32
-	position mgl32.Vec3
-	rotation float32
+	vertices     []float32
+	indices      []uint32
+	position     mgl32.Vec3
+	rotation     float32
+	rotationAxes mgl32.Vec3
 }
 
-func NewParallelepiped(a, b, c float32, pos mgl32.Vec3, rotation float32) *Parallelepiped {
+func NewParallelepiped(a, b, c float32, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Parallelepiped {
 	vertices := []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -66,7 +67,7 @@ func NewParallelepiped(a, b, c float32, pos mgl32.Vec3, rotation float32) *Paral
 		indices = append(indices, uint32(i))
 	}
 
-	return &Parallelepiped{vertices: vertices, position: pos, rotation: rotation, indices: indices}
+	return &Parallelepiped{vertices: vertices, position: pos, rotation: rotation, indices: indices, rotationAxes: rotationAxes}
 }
 
 func (c *Parallelepiped) Vertices() []float32 {
@@ -91,4 +92,8 @@ func (c *Parallelepiped) SetRotation(f float32) {
 
 func (c *Parallelepiped) Indices() []uint32 {
 	return c.indices
+}
+
+func (c *Parallelepiped) RotationAxes() mgl32.Vec3 {
+	return c.rotationAxes
 }

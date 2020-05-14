@@ -3,13 +3,14 @@ package main
 import "github.com/go-gl/mathgl/mgl32"
 
 type Cube struct {
-	position mgl32.Vec3
-	vertices []float32
-	indices  []uint32
-	rotation float32
+	position     mgl32.Vec3
+	vertices     []float32
+	indices      []uint32
+	rotation     float32
+	rotationAxes mgl32.Vec3
 }
 
-func NewCube(a float32, pos mgl32.Vec3, rotation float32) *Cube {
+func NewCube(a float32, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cube {
 	vertices := []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -67,7 +68,7 @@ func NewCube(a float32, pos mgl32.Vec3, rotation float32) *Cube {
 		indices = append(indices, uint32(i))
 	}
 
-	return &Cube{vertices: vertices, position: pos, rotation: rotation, indices: indices}
+	return &Cube{vertices: vertices, position: pos, rotation: rotation, indices: indices, rotationAxes: rotationAxes}
 }
 
 func (c *Cube) Vertices() []float32 {
@@ -91,4 +92,8 @@ func (c *Cube) SetRotation(f float32) {
 
 func (c *Cube) Indices() []uint32 {
 	return c.indices
+}
+
+func (c *Cube) RotationAxes() mgl32.Vec3 {
+	return c.rotationAxes
 }
