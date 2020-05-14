@@ -49,11 +49,12 @@ func newProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error)
 	return program, nil
 }
 
-func newTexture(file string) (uint32, error) {
+func newTexture(file string, n int) (uint32, error) {
 	imgFile, err := os.Open(file)
 	if err != nil {
 		return 0, fmt.Errorf("texture %q not found on disk: %v", file, err)
 	}
+	defer imgFile.Close()
 	img, _, err := image.Decode(imgFile)
 	if err != nil {
 		return 0, err
@@ -67,7 +68,7 @@ func newTexture(file string) (uint32, error) {
 
 	var texture uint32
 	gl.GenTextures(1, &texture)
-	gl.ActiveTexture(gl.TEXTURE0)
+	gl.ActiveTexture(uint32(gl.TEXTURE0 + n))
 	gl.BindTexture(gl.TEXTURE_2D, texture)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -163,6 +164,28 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 
 	if window.GetKey(glfw.KeyQ) == glfw.Press {
 		objects[currentObject].SetRotation(objects[currentObject].Rotation() - 1)
+	}
+
+	if window.GetKey(glfw.KeyZ) == glfw.Press {
+		if objects[currentObject].RotationAxes().Z() != 1 {
+			objects[currentObject].SetRotation(0)
+		}
+		objects[currentObject].SetRotationAxes(mgl32.Vec3{0, 0, 1})
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 1)
+	}
+	if window.GetKey(glfw.KeyY) == glfw.Press {
+		if objects[currentObject].RotationAxes().Y() != 1 {
+			objects[currentObject].SetRotation(0)
+		}
+		objects[currentObject].SetRotationAxes(mgl32.Vec3{0, 1, 0})
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 1)
+	}
+	if window.GetKey(glfw.KeyX) == glfw.Press {
+		if objects[currentObject].RotationAxes().X() != 1 {
+			objects[currentObject].SetRotation(0)
+		}
+		objects[currentObject].SetRotationAxes(mgl32.Vec3{1, 0, 0})
+		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 1)
 	}
 }
 

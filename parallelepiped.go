@@ -104,3 +104,11 @@ func (c *Parallelepiped) RotationAxes() mgl32.Vec3 {
 func (c *Parallelepiped) DrawMode() uint32 {
 	return gl.TRIANGLES
 }
+
+func (c *Parallelepiped) Texture() uint32 {
+	return 1
+}
+
+func (c *Parallelepiped) SetRotationAxes(vec3 mgl32.Vec3) {
+	c.rotationAxes = vec3
+}

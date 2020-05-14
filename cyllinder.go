@@ -110,3 +110,11 @@ func (c *Cyllinder) RotationAxes() mgl32.Vec3 {
 func (c *Cyllinder) DrawMode() uint32 {
 	return gl.TRIANGLES
 }
+
+func (c *Cyllinder) Texture() uint32 {
+	return 1
+}
+
+func (c *Cyllinder) SetRotationAxes(vec3 mgl32.Vec3) {
+	c.rotationAxes = vec3
+}

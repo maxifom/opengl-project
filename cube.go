@@ -104,3 +104,11 @@ func (c *Cube) RotationAxes() mgl32.Vec3 {
 func (c *Cube) DrawMode() uint32 {
 	return gl.TRIANGLES
 }
+
+func (c *Cube) Texture() uint32 {
+	return 1
+}
+
+func (c *Cube) SetRotationAxes(vec3 mgl32.Vec3) {
+	c.rotationAxes = vec3
+}

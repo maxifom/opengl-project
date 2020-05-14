@@ -99,12 +99,15 @@ func main() {
 	gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 	textureUniform := gl.GetUniformLocation(program, gl.Str("tex\x00"))
-	gl.Uniform1i(textureUniform, 0)
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	texture, err := newTexture("tank.jpg")
+	_, err = newTexture("tank.jpg", 0)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	_, err = newTexture("blue.jpg", 1)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -115,12 +118,12 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	//objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	//objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	//objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewTorus())
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewCube(3, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewTorus(1, 0.2, 1, 1, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -162,22 +165,20 @@ func main() {
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
 			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
-			// Кручение вокруг оси OY
-			// TODO: динамическая ось раскомментить ротейт и позицион
-			// TODO: rotation зависит от позиции у куба
+			// TODO: rotation зависит от позиции
 
 			rotationAngle := mgl32.DegToRad(object.Rotation())
 			model = mgl32.HomogRotate3D(rotationAngle, object.RotationAxes())
 
-			// Перемещение на позицию в мире, перемещать до ротации нельзя
+			// Перемещение на позицию в мире, перемещать до ротации нельзя, иначе все будет в (0,0,0)
 			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
 
-			//TODO: dynamic texture
-			gl.ActiveTexture(gl.TEXTURE0)
-			gl.BindTexture(gl.TEXTURE_2D, texture)
+			gl.ActiveTexture(gl.TEXTURE0 + object.Texture())
+
+			gl.Uniform1i(textureUniform, int32(object.Texture()))
 
 			// Зум камеры
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)

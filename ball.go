@@ -114,3 +114,11 @@ func (b *Ball) RotationAxes() mgl32.Vec3 {
 func (b *Ball) DrawMode() uint32 {
 	return gl.TRIANGLES
 }
+
+func (b *Ball) Texture() uint32 {
+	return 1
+}
+
+func (b *Ball) SetRotationAxes(vec3 mgl32.Vec3) {
+	b.rotationAxes = vec3
+}

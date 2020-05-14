@@ -93,3 +93,11 @@ func (c *ClosedCyllinder) RotationAxes() mgl32.Vec3 {
 func (c *ClosedCyllinder) DrawMode() uint32 {
 	return gl.LINES
 }
+
+func (c *ClosedCyllinder) Texture() uint32 {
+	return 1
+}
+
+func (c *ClosedCyllinder) SetRotationAxes(vec3 mgl32.Vec3) {
+	c.rotationAxes = vec3
+}
