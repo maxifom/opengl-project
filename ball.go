@@ -6,59 +6,59 @@ import (
 )
 
 type Ball struct {
-	vertices []float32
-	indices  []uint32
-	rotation float32
-	position mgl32.Vec3
+	vertices     []float32
+	indices      []uint32
+	rotation     float32
+	position     mgl32.Vec3
+	rotationAxes mgl32.Vec3
 }
 
-// TODO: Получился круг а не шар
 func NewBall() *Ball {
 	var vertices []float32
 	var indices []uint32
 
-	var r = 1.0
-	var db = 1
-	var dl = 1
+	var r float64 = 1.0
+	var db float64 = 5
+	var dl float64 = 5
 
-	// TODO: image texture will not work, only solid color
-	for b := -90; b < 90; b += db {
-		for l := 0; l < 360; l += dl {
+	// TODO: image texture will not work, only solid color (в книге описано как сделать)
+	for b := float64(-90); b < 90; b += db {
+		for l := float64(0); l < 360; l += dl {
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Sin(float64(l))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Cos(float64(l))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b))))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l)))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l)))
+			vertices = append(vertices, float32(r*math.Sin(b)))
 			vertices = append(vertices, 1, 1)
 
 			//x1,y1,z1,u1,v1
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Sin(float64(l))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Cos(float64(l))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b+db))))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l)))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l)))
+			vertices = append(vertices, float32(r*math.Sin(b+db)))
 			vertices = append(vertices, 1, 1)
 
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Cos(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b+db))))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l+dl)))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l+dl)))
+			vertices = append(vertices, float32(r*math.Sin(b+db)))
 			vertices = append(vertices, 1, 1)
 
 			// 0123 четырехугольник = 012 + 230
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b+db))*math.Cos(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b+db))))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l+dl)))
+			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l+dl)))
+			vertices = append(vertices, float32(r*math.Sin(b+db)))
 			vertices = append(vertices, 1, 1)
 
 			//x3,y3,z3,u3,v3
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Cos(float64(l+dl))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b))))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l+dl)))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l+dl)))
+			vertices = append(vertices, float32(r*math.Sin(b)))
 			vertices = append(vertices, 1, 1)
 
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Sin(float64(l))))
-			vertices = append(vertices, float32(r*math.Cos(float64(b))*math.Cos(float64(l))))
-			vertices = append(vertices, float32(r*math.Sin(float64(b))))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l)))
+			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l)))
+			vertices = append(vertices, float32(r*math.Sin(b)))
 			vertices = append(vertices, 1, 1)
 		}
 	}
@@ -68,10 +68,11 @@ func NewBall() *Ball {
 	}
 
 	return &Ball{
-		vertices: vertices,
-		indices:  indices,
-		rotation: 0,
-		position: mgl32.Vec3{},
+		vertices:     vertices,
+		indices:      indices,
+		rotation:     0,
+		position:     mgl32.Vec3{},
+		rotationAxes: mgl32.Vec3{0, 1, 0},
 	}
 }
 
@@ -97,4 +98,8 @@ func (b *Ball) Rotation() float32 {
 
 func (b *Ball) SetRotation(f float32) {
 	b.rotation = f
+}
+
+func (b *Ball) RotationAxes() mgl32.Vec3 {
+	return b.rotationAxes
 }

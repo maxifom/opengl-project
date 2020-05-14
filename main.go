@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 5}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -112,6 +112,7 @@ func main() {
 	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0))
 	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 8, 0}, 0))
 	objects = append(objects, NewBall())
+	//objects = append(objects, NewCyllinder())
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -147,6 +148,7 @@ func main() {
 		// Render
 		gl.UseProgram(program)
 		for _, object := range objects {
+
 			v := object.Vertices()
 			i := object.Indices()
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
@@ -154,10 +156,10 @@ func main() {
 			model = mgl32.Ident4()
 			// Кручение вокруг оси OY
 			// TODO: динамическая ось раскомментить ротейт и позицион
-			//model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
+			model = mgl32.HomogRotate3D(object.Rotation(), object.RotationAxes())
 
 			// Перемещение на позицию в мире
-			//model = TranslateMat4Vec3(model, object.Position())
+			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
@@ -169,7 +171,8 @@ func main() {
 			// Зум камеры
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-
+			//TODO: DEBUG
+			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 			gl.DrawElements(gl.TRIANGLES, int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 
