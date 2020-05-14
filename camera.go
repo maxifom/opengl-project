@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -14,8 +15,14 @@ const (
 	LEFT     = "left"
 	RIGHT    = "right"
 
-	LEFT90  = "left_90"
-	RIGHT90 = "right_90"
+	XPLUS  = "x_plus"
+	XMINUS = "x_minus"
+
+	YPLUS  = "y_plus"
+	YMINUS = "y_minus"
+
+	ZPLUS  = "z_plus"
+	ZMINUS = "z_minus"
 )
 
 type Camera struct {
@@ -41,7 +48,7 @@ func NewCamera(yaw float32, pitch float32, position mgl32.Vec3, up mgl32.Vec3) C
 	return camera
 }
 
-func (c Camera) GetViewMatrix() mgl32.Mat4 {
+func (c *Camera) GetViewMatrix() mgl32.Mat4 {
 	return mgl32.LookAtV(c.Position, c.Position.Add(c.Front), c.Up)
 }
 
@@ -56,10 +63,18 @@ func (c *Camera) ProcessKeyboard(direction CameraDirection, deltaTime float32) {
 		c.Position = c.Position.Sub(c.Right.Mul(velocity))
 	case RIGHT:
 		c.Position = c.Position.Add(c.Right.Mul(velocity))
-	case LEFT90:
-		c.Yaw -= 90
-	case RIGHT90:
-		c.Yaw += 90
+	case ZPLUS:
+		c.Position = c.Position.Sub(c.Up.Mul(velocity))
+	case ZMINUS:
+		c.Position = c.Position.Add(c.Up.Mul(velocity))
+	case YPLUS:
+		c.ProcessMouseMovement(0, 5, true)
+	case YMINUS:
+		c.ProcessMouseMovement(0, -5, true)
+	case XMINUS:
+		c.ProcessMouseMovement(-5, 0, true)
+	case XPLUS:
+		c.ProcessMouseMovement(5, 0, true)
 	default:
 		panic("invalid direction " + direction)
 	}
@@ -85,7 +100,7 @@ func (c *Camera) ProcessMouseMovement(xOffset, yOffset float32, constrainPitch b
 }
 
 func (c *Camera) ProcessMouseScroll(yOffset float32) {
-	if c.Zoom > 1 && c.Zoom <= 90 {
+	if c.Zoom >= 1 && c.Zoom <= 90 {
 		c.Zoom -= yOffset
 	}
 	if c.Zoom <= 1 {
@@ -104,4 +119,8 @@ func (c *Camera) UpdateCameraVectors() {
 	}.Normalize()
 	c.Right = c.Front.Cross(c.WorldUp).Normalize()
 	c.Up = c.Right.Cross(c.Front).Normalize()
+}
+
+func (c *Camera) String() string {
+	return fmt.Sprintf("Camera: \nPosition: %#v\nFront: %#v\nRight:%#v\nUp:%#v\nWorldUp:%#v\nPitch:%.8f\nYaw:%.8f\nZoom:%.8f\nMouseSensitivity:%.8f\nMovement Speed: %.2f\n", c.Position, c.Front, c.Right, c.Up, c.WorldUp, c.Pitch, c.Yaw, c.Zoom, c.MouseSensitivity, c.MovementSpeed)
 }

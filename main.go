@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 20}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -37,6 +37,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
 	window, err := glfw.CreateWindow(windowWidth, windowHeight, "OpenGL Tank", nil, nil)
 	if err != nil {
 		panic(err)
@@ -67,6 +68,11 @@ func main() {
 		panic(err)
 	}
 
+	// TODO: Anti-Aliasing
+	// Замедляет
+	//glfw.WindowHint(glfw.Samples, 4)
+	//gl.Enable(gl.MULTISAMPLE)
+
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
@@ -93,12 +99,15 @@ func main() {
 	gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 	textureUniform := gl.GetUniformLocation(program, gl.Str("tex\x00"))
-	gl.Uniform1i(textureUniform, 0)
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	texture, err := newTexture("tank.jpg")
+	_, err = newTexture("tank.jpg", 0)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	_, err = newTexture("blue.jpg", 1)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -109,12 +118,19 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(3, 4, 5, mgl32.Vec3{0, 0, 0}))
-	objects = append(objects, NewParallelepiped(2, 3, 4, mgl32.Vec3{4, 0, 0}))
-
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewCube(3, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewTorus(1, 0.2, 1, 1, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+
+	var ebo uint32
+	gl.GenBuffers(1, &ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 
 	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
@@ -129,41 +145,47 @@ func main() {
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
-	angle := 0.0
 	previousTime := glfw.GetTime()
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		// Update
 		time := glfw.GetTime()
 		elapsed := time - previousTime
 		previousTime = time
 
 		ProcessInput(&c, window, float32(elapsed), objects)
 
-		angle += elapsed
-		angle = 0
-		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
-
 		// Render
 		gl.UseProgram(program)
 		for _, object := range objects {
+
 			v := object.Vertices()
+			i := object.Indices()
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
+			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
+			// TODO: rotation зависит от позиции
+
+			rotationAngle := mgl32.DegToRad(object.Rotation())
+			model = mgl32.HomogRotate3D(rotationAngle, object.RotationAxes())
+
+			// Перемещение на позицию в мире, перемещать до ротации нельзя, иначе все будет в (0,0,0)
 			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
 
-			gl.ActiveTexture(gl.TEXTURE0)
-			gl.BindTexture(gl.TEXTURE_2D, texture)
+			gl.ActiveTexture(gl.TEXTURE0 + object.Texture())
 
+			gl.Uniform1i(textureUniform, int32(object.Texture()))
+
+			// Зум камеры
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-
-			gl.DrawArrays(gl.TRIANGLES, 0, int32(len(v)))
+			//TODO: DEBUG
+			//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+			gl.DrawElements(object.DrawMode(), int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 
 		mat4 := c.GetViewMatrix()

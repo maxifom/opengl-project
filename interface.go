@@ -6,6 +6,13 @@ import (
 
 type Object interface {
 	Vertices() []float32
+	Indices() []uint32
 	Position() mgl32.Vec3
 	SetPosition(vec3 mgl32.Vec3)
+	Rotation() float32
+	RotationAxes() mgl32.Vec3
+	SetRotation(float32)
+	SetRotationAxes(mgl32.Vec3)
+	DrawMode() uint32
+	Texture() uint32
 }

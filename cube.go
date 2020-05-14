@@ -1,14 +1,19 @@
 package main
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 type Cube struct {
-	position mgl32.Vec3
-	vertices []float32
+	position     mgl32.Vec3
+	vertices     []float32
+	indices      []uint32
+	rotation     float32
+	rotationAxes mgl32.Vec3
 }
 
-func NewCube(a float32, pos mgl32.Vec3) *Cube {
-	// TODO: Fix texture
+func NewCube(a float32, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cube {
 	vertices := []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -60,7 +65,13 @@ func NewCube(a float32, pos mgl32.Vec3) *Cube {
 		a, a, a, 0.0, 1.0,
 	}
 
-	return &Cube{vertices: vertices, position: pos}
+	var indices []uint32
+
+	for i := range vertices {
+		indices = append(indices, uint32(i))
+	}
+
+	return &Cube{vertices: vertices, position: pos, rotation: rotation, indices: indices, rotationAxes: rotationAxes}
 }
 
 func (c *Cube) Vertices() []float32 {
@@ -72,4 +83,32 @@ func (c *Cube) Position() mgl32.Vec3 {
 }
 func (c *Cube) SetPosition(pos mgl32.Vec3) {
 	c.position = pos
+}
+
+func (c *Cube) Rotation() float32 {
+	return c.rotation
+}
+
+func (c *Cube) SetRotation(f float32) {
+	c.rotation = f
+}
+
+func (c *Cube) Indices() []uint32 {
+	return c.indices
+}
+
+func (c *Cube) RotationAxes() mgl32.Vec3 {
+	return c.rotationAxes
+}
+
+func (c *Cube) DrawMode() uint32 {
+	return gl.TRIANGLES
+}
+
+func (c *Cube) Texture() uint32 {
+	return 1
+}
+
+func (c *Cube) SetRotationAxes(vec3 mgl32.Vec3) {
+	c.rotationAxes = vec3
 }
