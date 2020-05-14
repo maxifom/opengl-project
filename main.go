@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 5}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -115,11 +115,11 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	//objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -182,8 +182,8 @@ func main() {
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 			//TODO: DEBUG
-			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-			gl.DrawElements(gl.TRIANGLES, int32(len(i)/5), gl.UNSIGNED_INT, nil)
+			//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+			gl.DrawElements(object.DrawMode(), int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 
 		mat4 := c.GetViewMatrix()

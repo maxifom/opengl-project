@@ -12,4 +12,5 @@ type Object interface {
 	Rotation() float32
 	RotationAxes() mgl32.Vec3
 	SetRotation(float32)
+	DrawMode() uint32
 }

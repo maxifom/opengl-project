@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 )
@@ -33,21 +34,17 @@ func NewClosedCyllinder(H, R, dh, dx float64, position mgl32.Vec3, rotation floa
 			// Вертикаль от xc+x, yc+y, -h/2 до xc+x, yc+y, h/2 - боковая
 			//vertices = append(vertices, float32(xc+x), float32(yc+y), -h/2, 1, 1)
 			//vertices = append(vertices, float32(xc+x), float32(yc+y), h/2, 1, 1)
-			//vertices = append(vertices, float32(xc+x), float32(yc+y), h/2, 1, 1)
 
 			// Вертикаль от xc-x, yc+y,-h/2 до xc-x, yc+y, h/2 - боковая
 			//vertices = append(vertices, float32(xc-x), float32(yc+y), -h/2, 1, 1)
-			//vertices = append(vertices, float32(xc-x), float32(yc+y), h/2, 1, 1)
 			//vertices = append(vertices, float32(xc-x), float32(yc+y), h/2, 1, 1)
 
 			// Вертикаль от xc+x, yc-y, -h/2 до xc+x, yc+y, -h/2 - вертикаль основания
 			vertices = append(vertices, float32(xc+x), float32(yc-y), -h/2, 1, 1)
 			vertices = append(vertices, float32(xc+x), float32(yc+y), -h/2, 1, 1)
-			vertices = append(vertices, float32(xc+x), float32(yc+y), -h/2, 1, 1)
 
 			// Вертикаль от xc-x, yc-y, -h/2 до xc-x, yc+y, -h/2 - вертикаль основания
 			vertices = append(vertices, float32(xc-x), float32(yc-y), -h/2, 1, 1)
-			vertices = append(vertices, float32(xc-x), float32(yc+y), -h/2, 1, 1)
 			vertices = append(vertices, float32(xc-x), float32(yc+y), -h/2, 1, 1)
 		}
 	}
@@ -91,4 +88,8 @@ func (c *ClosedCyllinder) SetRotation(f float32) {
 
 func (c *ClosedCyllinder) RotationAxes() mgl32.Vec3 {
 	return c.rotationAxes
+}
+
+func (c *ClosedCyllinder) DrawMode() uint32 {
+	return gl.LINES
 }

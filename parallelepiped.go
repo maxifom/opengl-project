@@ -1,6 +1,9 @@
 package main
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 type Parallelepiped struct {
 	vertices     []float32
@@ -96,4 +99,8 @@ func (c *Parallelepiped) Indices() []uint32 {
 
 func (c *Parallelepiped) RotationAxes() mgl32.Vec3 {
 	return c.rotationAxes
+}
+
+func (c *Parallelepiped) DrawMode() uint32 {
+	return gl.TRIANGLES
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 )
@@ -108,4 +109,8 @@ func (b *Ball) SetRotation(f float32) {
 
 func (b *Ball) RotationAxes() mgl32.Vec3 {
 	return b.rotationAxes
+}
+
+func (b *Ball) DrawMode() uint32 {
+	return gl.TRIANGLES
 }
