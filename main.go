@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 75, mgl32.Vec3{0, -15, 4}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 15}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -109,14 +109,19 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 90))
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 90))
+	objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 90))
 	//objects = append(objects, NewParallelepiped(4, 3, 1, mgl32.Vec3{0, 0, 2}, 0))
-	objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 0}, 0))
+	//objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 0}, 0))
 	//objects = append(objects, NewCyllinder(1, 1, 2, 36, 8, 0, mgl32.Vec3{0, 0, 0}))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+
+	var ebo uint32
+	gl.GenBuffers(1, &ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 
 	vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
@@ -147,7 +152,9 @@ func main() {
 		gl.UseProgram(program)
 		for _, object := range objects {
 			v := object.Vertices()
+			i := object.Indices()
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
+			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
 			model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
 			model = TranslateMat4Vec3(model, object.Position())
@@ -161,7 +168,7 @@ func main() {
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-			gl.DrawArrays(gl.TRIANGLES, 0, int32(len(v)))
+			gl.DrawElements(gl.TRIANGLES, int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 
 		mat4 := c.GetViewMatrix()
