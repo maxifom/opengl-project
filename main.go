@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 15}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -109,11 +109,8 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 90))
-	objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 90))
-	//objects = append(objects, NewParallelepiped(4, 3, 1, mgl32.Vec3{0, 0, 2}, 0))
-	//objects = append(objects, NewCircle(360, 1, mgl32.Vec3{0, 0, 0}, 0))
-	//objects = append(objects, NewCyllinder(1, 1, 2, 36, 8, 0, mgl32.Vec3{0, 0, 0}))
+	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0))
+	objects = append(objects, NewCube(3, mgl32.Vec3{0, 8, 0}, 0))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -141,7 +138,6 @@ func main() {
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		// Update
 		time := glfw.GetTime()
 		elapsed := time - previousTime
 		previousTime = time
@@ -156,15 +152,20 @@ func main() {
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
 			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
+			// Кручение вокруг оси OY
 			model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
+
+			// Перемещение на позицию в мире
 			model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
 
+			//TODO: dynamic texture
 			gl.ActiveTexture(gl.TEXTURE0)
 			gl.BindTexture(gl.TEXTURE_2D, texture)
 
+			// Зум камеры
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
