@@ -5,6 +5,12 @@ import (
 	"math"
 )
 
+// b - широта от -90 до 90
+// l - долгота от 0 до 360
+// x = R * cosB * sinL
+// y = R * cosB * cosL
+// z = R * sinB
+
 type Ball struct {
 	vertices     []float32
 	indices      []uint32
