@@ -5,6 +5,7 @@ import (
 	"math"
 )
 
+// Цилиндр без крышек
 type Cyllinder struct {
 	vertices     []float32
 	indices      []uint32
@@ -13,51 +14,51 @@ type Cyllinder struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewCyllinder() *Cyllinder {
+func NewCyllinder(H, R, dh, dl float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
 	var vertices []float32
 	var indices []uint32
 
-	var H = 2.0
-	var R = 1.0
-	var dh = 0.001
-	var dl = 1
+	//var H = 2.0
+	//var R = 1.0
+	//var dh = 0.01
+	//var dl = 1
 	for h := -0.5; h < 0.5; h += dh {
-		for l := 0; l < 360; l += dl {
+		for l := float64(0); l < 360; l += dl {
 
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(R*math.Sin(float64(l))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l))))
+			vertices = append(vertices, float32(R*math.Sin(l)))
+			vertices = append(vertices, float32(R*math.Cos(l)))
 			vertices = append(vertices, float32(h*H))
 			vertices = append(vertices, 1, 1)
 
 			//x1,y1,z1,u1,v1
-			vertices = append(vertices, float32(R*math.Sin(float64(l))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l))))
+			vertices = append(vertices, float32(R*math.Sin(l)))
+			vertices = append(vertices, float32(R*math.Cos(l)))
 			vertices = append(vertices, float32((h+dh)*H))
 			vertices = append(vertices, 1, 1)
 
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(R*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l+dl))))
+			vertices = append(vertices, float32(R*math.Sin(l+dl)))
+			vertices = append(vertices, float32(R*math.Cos(l+dl)))
 			vertices = append(vertices, float32((h+dh)*H))
 			vertices = append(vertices, 1, 1)
 
 			// 0123 четырехугольник = 012 + 230
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(R*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l+dl))))
+			vertices = append(vertices, float32(R*math.Sin(l+dl)))
+			vertices = append(vertices, float32(R*math.Cos(l+dl)))
 			vertices = append(vertices, float32((h+dh)*H))
 			vertices = append(vertices, 1, 1)
 
 			//x3,y3,z3,u3,v3
-			vertices = append(vertices, float32(R*math.Sin(float64(l+dl))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l+dl))))
+			vertices = append(vertices, float32(R*math.Sin(l+dl)))
+			vertices = append(vertices, float32(R*math.Cos(l+dl)))
 			vertices = append(vertices, float32(h*H))
 			vertices = append(vertices, 1, 1)
 
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(R*math.Sin(float64(l))))
-			vertices = append(vertices, float32(R*math.Cos(float64(l))))
+			vertices = append(vertices, float32(R*math.Sin(l)))
+			vertices = append(vertices, float32(R*math.Cos(l)))
 			vertices = append(vertices, float32(h*H))
 			vertices = append(vertices, 1, 1)
 
@@ -71,9 +72,9 @@ func NewCyllinder() *Cyllinder {
 	return &Cyllinder{
 		vertices:     vertices,
 		indices:      indices,
-		rotation:     0,
-		position:     mgl32.Vec3{},
-		rotationAxes: mgl32.Vec3{0, 1, 0},
+		rotation:     rotation,
+		position:     position,
+		rotationAxes: rotationAxes,
 	}
 }
 

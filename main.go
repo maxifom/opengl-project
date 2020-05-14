@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 5}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -37,6 +37,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
 	window, err := glfw.CreateWindow(windowWidth, windowHeight, "OpenGL Tank", nil, nil)
 	if err != nil {
 		panic(err)
@@ -66,6 +67,11 @@ func main() {
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
+
+	// TODO: Anti-Aliasing
+	// Замедляет
+	//glfw.WindowHint(glfw.Samples, 4)
+	//gl.Enable(gl.MULTISAMPLE)
 
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
@@ -112,7 +118,8 @@ func main() {
 	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewCyllinder())
+	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
