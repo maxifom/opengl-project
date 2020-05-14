@@ -115,11 +115,12 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	//objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	//objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	//objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objects = append(objects, NewTorus())
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
