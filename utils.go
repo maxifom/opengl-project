@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example/pkg/objects"
 	"fmt"
 	"image"
 	"image/draw"
@@ -91,7 +92,7 @@ func newTexture(file string, n int) (uint32, error) {
 var currentObject = 0
 var lastTimeChangedCurrentObject = time.Time{}
 
-func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, objects []Object) {
+func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, objects []objects.Object) {
 	if window.GetKey(glfw.KeyEscape) == glfw.Press {
 		window.SetShouldClose(true)
 	}

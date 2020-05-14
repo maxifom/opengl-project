@@ -1,6 +1,7 @@
 package main
 
 import (
+	"example/pkg/objects"
 	"fmt"
 	_ "image/jpeg"
 	_ "image/png"
@@ -117,13 +118,13 @@ func main() {
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
 
-	var objects []Object
-	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objects = append(objects, NewCube(3, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objects = append(objects, NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objects = append(objects, NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objects = append(objects, NewTorus(1, 0.2, 1, 1, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
+	var objs []objects.Object
+	objs = append(objs, objects.NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objs = append(objs, objects.NewCube(3, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objs = append(objs, objects.NewBall(1, 5, 5, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objs = append(objs, objects.NewCyllinder(2, 1, 0.01, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	objs = append(objs, objects.NewClosedCyllinder(2, 1, 0.005, 0.001, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objs = append(objs, objects.NewTorus(1, 0.2, 1, 1, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -154,24 +155,21 @@ func main() {
 		elapsed := time - previousTime
 		previousTime = time
 
-		ProcessInput(&c, window, float32(elapsed), objects)
+		ProcessInput(&c, window, float32(elapsed), objs)
 
 		// Render
 		gl.UseProgram(program)
-		for _, object := range objects {
+		for _, object := range objs {
 
 			v := object.Vertices()
 			i := object.Indices()
 			gl.BufferData(gl.ARRAY_BUFFER, len(v)*float32Size, gl.Ptr(v), gl.STATIC_DRAW)
 			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
-			// TODO: rotation зависит от позиции
 
 			rotationAngle := mgl32.DegToRad(object.Rotation())
-			model = mgl32.HomogRotate3D(rotationAngle, object.RotationAxes())
-
-			// Перемещение на позицию в мире, перемещать до ротации нельзя, иначе все будет в (0,0,0)
 			model = TranslateMat4Vec3(model, object.Position())
+			model = model.Mul4(mgl32.HomogRotate3D(rotationAngle, object.RotationAxes()))
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
