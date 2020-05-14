@@ -109,9 +109,9 @@ func main() {
 	gl.BindVertexArray(vao)
 
 	var objects []Object
-	objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0))
-	objects = append(objects, NewCube(3, mgl32.Vec3{0, 8, 0}, 0))
-
+	//objects = append(objects, NewParallelepiped(5, 4, 2, mgl32.Vec3{0, 0, 0}, 0))
+	//objects = append(objects, NewCube(3, mgl32.Vec3{0, 8, 0}, 0))
+	objects = append(objects, NewBall())
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -153,10 +153,11 @@ func main() {
 			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(i)*uint32Size, gl.Ptr(i), gl.STATIC_DRAW)
 			model = mgl32.Ident4()
 			// Кручение вокруг оси OY
-			model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
+			// TODO: динамическая ось раскомментить ротейт и позицион
+			//model = mgl32.HomogRotate3D(object.Rotation(), mgl32.Vec3{0, 1, 0})
 
 			// Перемещение на позицию в мире
-			model = TranslateMat4Vec3(model, object.Position())
+			//model = TranslateMat4Vec3(model, object.Position())
 			gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
 			gl.BindVertexArray(vao)
