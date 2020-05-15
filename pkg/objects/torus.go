@@ -109,7 +109,7 @@ func (c *Torus) RotationAxes() mgl32.Vec3 {
 }
 
 func (c *Torus) DrawMode() uint32 {
-	return gl.LINES
+	return gl.TRIANGLES
 }
 
 func (c *Torus) Texture() uint32 {
