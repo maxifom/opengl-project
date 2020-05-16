@@ -24,8 +24,7 @@ func init() {
 }
 
 func main() {
-	print(3)
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 2, 5}, mgl32.Vec3{0, 1, 0})
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -125,9 +124,12 @@ func main() {
 	//objs = append(objs, objects.NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewCube(1, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewBall(1, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objs = append(objs, objects.NewCyllinder(4, 1, 5, mgl32.Vec3{0, 0, 0}, 60, mgl32.Vec3{1, 0, 0}))
-	//objs = append(objs, objects.NewClosedCyllinder(1, 1, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objs = append(objs, objects.NewCyllinder(1, 1, 3, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	//objs = append(objs, objects.NewClosedCyllinder(1, 2, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	//objs = append(objs, objects.NewTorus(1, 0.2, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
+
+	objs = append(objs, objects.NewXYEllipse(0, 0, 3, 1, 0, mgl32.Vec3{0, 0, 0}, 90, mgl32.Vec3{0, 0, 1}))
+
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)

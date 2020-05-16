@@ -21,7 +21,7 @@ func NewCyllinder(H, Rx, Ry float64, position mgl32.Vec3, rotation float32, rota
 	var indices []uint32
 
 	dh := H / 200.0
-	dl := mgl64.DegToRad(0.1)
+	dl := mgl64.DegToRad(1)
 	for h := -0.5; h < 0.5; h += dh {
 		for l := mgl64.DegToRad(0); l < mgl64.DegToRad(360); l += dl {
 			//x0,y0,z0,u0,v0
