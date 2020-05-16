@@ -121,8 +121,8 @@ func main() {
 	var objs []objects.Object
 	//objs = append(objs, objects.NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewCube(3, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
-	objs = append(objs, objects.NewBall(1, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	//objs = append(objs, objects.NewCyllinder(2, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
+	//objs = append(objs, objects.NewBall(1, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
+	objs = append(objs, objects.NewCyllinder(2, 1, mgl32.Vec3{4, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewClosedCyllinder(2, 1, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	//objs = append(objs, objects.NewTorus(1, 0.2, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
 	var vbo uint32
