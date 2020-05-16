@@ -20,6 +20,7 @@ func NewXYEllipse(cx, cy, rx, ry, z float32, position mgl32.Vec3, rotation float
 	var vertices []float32
 	var indices []uint32
 
+	// Угол = 60 для треугольного
 	da := mgl64.DegToRad(1)
 	vertices = append(vertices, cx, cy, z, 1, 1)
 	indices = append(indices, 0)
