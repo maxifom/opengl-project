@@ -18,8 +18,8 @@ func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes 
 	var vertices []float32
 	var indices []uint32
 
-	dw := 0.5
-	dphi := 0.5
+	dw := 1.0
+	dphi := 1.0
 
 	for w := -180.0; w < 180.0; w += dw {
 		for phi := -180.0; phi < 180.0; phi += dphi {

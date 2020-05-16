@@ -20,8 +20,8 @@ func NewClosedCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rot
 	var vertices []float32
 	var indices []uint32
 
-	dx := R / 1000.0
-	dh := H / 800.0
+	dx := R / 500.0
+	dh := H / 500.0
 
 	var xc = 0.0
 	var yc = 0.0

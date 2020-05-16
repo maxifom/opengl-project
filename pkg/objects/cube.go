@@ -106,7 +106,7 @@ func (c *Cube) DrawMode() uint32 {
 }
 
 func (c *Cube) Texture() uint32 {
-	return 1
+	return 0
 }
 
 func (c *Cube) SetRotationAxes(vec3 mgl32.Vec3) {
