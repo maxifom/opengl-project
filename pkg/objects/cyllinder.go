@@ -55,7 +55,6 @@ func NewCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rotationA
 				indice0, indice1, indice2,
 				indice2, indice3, indice0,
 			)
-
 		}
 	}
 

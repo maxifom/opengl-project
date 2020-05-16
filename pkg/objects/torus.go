@@ -18,8 +18,8 @@ func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes 
 	var vertices []float32
 	var indices []uint32
 
-	dw := 1.0
-	dphi := 1.0
+	dw := 0.5
+	dphi := 0.5
 
 	for w := -180.0; w < 180.0; w += dw {
 		for phi := -180.0; phi < 180.0; phi += dphi {
@@ -28,44 +28,34 @@ func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes 
 			vertices = append(vertices, float32((R+r*math.Cos(phi))*math.Cos(w)))
 			vertices = append(vertices, float32(r*math.Sin(phi)))
 			vertices = append(vertices, 1, 1)
+			indice0 := uint32(len(vertices)/5 - 1)
 
 			//x1,y1,z1,u1,v1
 			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Sin(w)))
 			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Cos(w)))
 			vertices = append(vertices, float32(r*math.Sin(phi+dphi)))
 			vertices = append(vertices, 1, 1)
+			indice1 := uint32(len(vertices)/5 - 1)
 
 			//x2,y2,z2,u2,v2
 			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Sin(w+dw)))
 			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Cos(w+dw)))
 			vertices = append(vertices, float32(r*math.Sin(phi+dphi)))
 			vertices = append(vertices, 1, 1)
-
-			// 0123 четырехугольник = 012 + 230
-			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Sin(w+dw)))
-			vertices = append(vertices, float32((R+r*math.Cos(phi+dphi))*math.Cos(w+dw)))
-			vertices = append(vertices, float32(r*math.Sin(phi+dphi)))
-			vertices = append(vertices, 1, 1)
+			indice2 := uint32(len(vertices)/5 - 1)
 
 			//x3,y3,z3,u3,v3
-			//x2,y2,z2,u2,v2
 			vertices = append(vertices, float32((R+r*math.Cos(phi))*math.Sin(w+dw)))
 			vertices = append(vertices, float32((R+r*math.Cos(phi))*math.Cos(w+dw)))
 			vertices = append(vertices, float32(r*math.Sin(phi)))
 			vertices = append(vertices, 1, 1)
+			indice3 := uint32(len(vertices)/5 - 1)
 
-			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32((R+r*math.Cos(phi))*math.Sin(w)))
-			vertices = append(vertices, float32((R+r*math.Cos(phi))*math.Cos(w)))
-			vertices = append(vertices, float32(r*math.Sin(phi)))
-			vertices = append(vertices, 1, 1)
-
+			indices = append(indices,
+				indice0, indice1, indice2,
+				indice2, indice3, indice0,
+			)
 		}
-	}
-
-	for i := range vertices {
-		indices = append(indices, uint32(i))
 	}
 
 	return &Torus{
