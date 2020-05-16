@@ -20,10 +20,12 @@ type Ball struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewBall(r, db, dl float64, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Ball {
+func NewBall(r float64, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Ball {
 	var vertices []float32
 	var indices []uint32
 
+	db := 1.0
+	dl := 1.0
 	// b - широта от -90 до 90
 	// l - долгота от 0 до 360
 	// db, dl - шаги широты и долготы
@@ -36,42 +38,34 @@ func NewBall(r, db, dl float64, pos mgl32.Vec3, rotation float32, rotationAxes m
 			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l)))
 			vertices = append(vertices, float32(r*math.Sin(b)))
 			vertices = append(vertices, 1, 1)
+			indice0 := uint32(len(vertices)/5 - 1)
 
 			//x1,y1,z1,u1,v1
 			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l)))
 			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l)))
 			vertices = append(vertices, float32(r*math.Sin(b+db)))
 			vertices = append(vertices, 1, 1)
+			indice1 := uint32(len(vertices)/5 - 1)
 
 			//x2,y2,z2,u2,v2
 			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l+dl)))
 			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l+dl)))
 			vertices = append(vertices, float32(r*math.Sin(b+db)))
 			vertices = append(vertices, 1, 1)
-
-			// 0123 четырехугольник = 012 + 230
-			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l+dl)))
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l+dl)))
-			vertices = append(vertices, float32(r*math.Sin(b+db)))
-			vertices = append(vertices, 1, 1)
+			indice2 := uint32(len(vertices)/5 - 1)
 
 			//x3,y3,z3,u3,v3
 			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l+dl)))
 			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l+dl)))
 			vertices = append(vertices, float32(r*math.Sin(b)))
 			vertices = append(vertices, 1, 1)
+			indice3 := uint32(len(vertices)/5 - 1)
 
-			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l)))
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l)))
-			vertices = append(vertices, float32(r*math.Sin(b)))
-			vertices = append(vertices, 1, 1)
+			indices = append(indices,
+				indice0, indice1, indice2,
+				indice2, indice3, indice0,
+			)
 		}
-	}
-
-	for i := range vertices {
-		indices = append(indices, uint32(i))
 	}
 
 	return &Ball{

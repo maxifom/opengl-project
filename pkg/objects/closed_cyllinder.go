@@ -15,29 +15,19 @@ type ClosedCyllinder struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewClosedCyllinder(H, R, dh, dx float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *ClosedCyllinder {
+func NewClosedCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *ClosedCyllinder {
 	var vertices []float32
 	var indices []uint32
 
-	//TODO: dx dh чтобы было константное кол-во шагов (в зависимости от радиуса)
-	//var H = 4.0
-	//var R = 1.0
-	//var dh = 0.005
-	//var dx = 0.001
+	dx := R / 1000.0
+	dh := H / 800.0
+
 	var xc = 0.0
 	var yc = 0.0
 	for sinB := -0.5; sinB < 0.5; sinB += dh {
 		for x := 0.0; x <= R; x += dx {
 			y := math.Sqrt(R*R - x*x)
 			h := float32(H * sinB)
-
-			// Вертикаль от xc+x, yc+y, -h/2 до xc+x, yc+y, h/2 - боковая
-			//vertices = append(vertices, float32(xc+x), float32(yc+y), -h/2, 1, 1)
-			//vertices = append(vertices, float32(xc+x), float32(yc+y), h/2, 1, 1)
-
-			// Вертикаль от xc-x, yc+y,-h/2 до xc-x, yc+y, h/2 - боковая
-			//vertices = append(vertices, float32(xc-x), float32(yc+y), -h/2, 1, 1)
-			//vertices = append(vertices, float32(xc-x), float32(yc+y), h/2, 1, 1)
 
 			// Вертикаль от xc+x, yc-y, -h/2 до xc+x, yc+y, -h/2 - вертикаль основания
 			vertices = append(vertices, float32(xc+x), float32(yc-y), -h/2, 1, 1)

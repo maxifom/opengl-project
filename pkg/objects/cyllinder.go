@@ -15,14 +15,12 @@ type Cyllinder struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewCyllinder(H, R, dh, dl float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
+func NewCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
 	var vertices []float32
 	var indices []uint32
 
-	//var H = 2.0
-	//var R = 1.0
-	//var dh = 0.01
-	//var dl = 1
+	dh := H / 200.0
+	dl := 1.0
 	for h := -0.5; h < 0.5; h += dh {
 		for l := float64(0); l < 360; l += dl {
 

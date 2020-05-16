@@ -14,15 +14,12 @@ type Torus struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewTorus(R, r, dw, dphi float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Torus {
+func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Torus {
 	var vertices []float32
 	var indices []uint32
 
-	//R := 1.0
-	//r := 0.2
-	//
-	//dw := 1.0
-	//dphi := 1.0
+	dw := 1.0
+	dphi := 1.0
 
 	for w := -180.0; w < 180.0; w += dw {
 		for phi := -180.0; phi < 180.0; phi += dphi {
