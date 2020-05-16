@@ -106,7 +106,7 @@ func (c *Parallelepiped) DrawMode() uint32 {
 }
 
 func (c *Parallelepiped) Texture() uint32 {
-	return 0
+	return 1
 }
 
 func (c *Parallelepiped) SetRotationAxes(vec3 mgl32.Vec3) {

@@ -3,6 +3,7 @@ package objects
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/go-gl/mathgl/mgl64"
 	"math"
 )
 
@@ -15,38 +16,38 @@ type Cyllinder struct {
 	rotationAxes mgl32.Vec3
 }
 
-func NewCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
+func NewCyllinder(H, Rx, Ry float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
 	var vertices []float32
 	var indices []uint32
 
 	dh := H / 200.0
-	dl := 1.0
+	dl := mgl64.DegToRad(0.1)
 	for h := -0.5; h < 0.5; h += dh {
-		for l := float64(0); l < 360; l += dl {
+		for l := mgl64.DegToRad(0); l < mgl64.DegToRad(360); l += dl {
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(R*math.Sin(l)))
-			vertices = append(vertices, float32(R*math.Cos(l)))
+			vertices = append(vertices, float32(Rx*math.Sin(l)))
+			vertices = append(vertices, float32(Ry*math.Cos(l)))
 			vertices = append(vertices, float32(h*H))
 			vertices = append(vertices, 1, 1)
 			indice0 := uint32(len(vertices)/5 - 1)
 
 			//x1,y1,z1,u1,v1
-			vertices = append(vertices, float32(R*math.Sin(l)))
-			vertices = append(vertices, float32(R*math.Cos(l)))
+			vertices = append(vertices, float32(Rx*math.Sin(l)))
+			vertices = append(vertices, float32(Ry*math.Cos(l)))
 			vertices = append(vertices, float32((h+dh)*H))
 			vertices = append(vertices, 1, 1)
 			indice1 := uint32(len(vertices)/5 - 1)
 
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(R*math.Sin(l+dl)))
-			vertices = append(vertices, float32(R*math.Cos(l+dl)))
+			vertices = append(vertices, float32(Rx*math.Sin(l+dl)))
+			vertices = append(vertices, float32(Ry*math.Cos(l+dl)))
 			vertices = append(vertices, float32((h+dh)*H))
 			vertices = append(vertices, 1, 1)
 			indice2 := uint32(len(vertices)/5 - 1)
 
 			//x3,y3,z3,u3,v3
-			vertices = append(vertices, float32(R*math.Sin(l+dl)))
-			vertices = append(vertices, float32(R*math.Cos(l+dl)))
+			vertices = append(vertices, float32(Rx*math.Sin(l+dl)))
+			vertices = append(vertices, float32(Ry*math.Cos(l+dl)))
 			vertices = append(vertices, float32(h*H))
 			vertices = append(vertices, 1, 1)
 			indice3 := uint32(len(vertices)/5 - 1)

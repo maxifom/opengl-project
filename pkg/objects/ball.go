@@ -3,11 +3,10 @@ package objects
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/go-gl/mathgl/mgl64"
 	"math"
 )
 
-// b - широта от -90 до 90
-// l - долгота от 0 до 360
 // x = R * cosB * sinL
 // y = R * cosB * cosL
 // z = R * sinB
@@ -24,41 +23,47 @@ func NewBall(r float64, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec
 	var vertices []float32
 	var indices []uint32
 
-	db := 1.0
-	dl := 1.0
-	// b - широта от -90 до 90
-	// l - долгота от 0 до 360
+	db := mgl64.DegToRad(1.0)
+	dl := mgl64.DegToRad(1.0)
 	// db, dl - шаги широты и долготы
 
 	// TODO: image texture will not work, only solid color (в книге описано как сделать)
-	for b := float64(-90); b < 90; b += db {
-		for l := float64(0); l < 360; l += dl {
+	for b := mgl64.DegToRad(0); b < mgl64.DegToRad(1440); b += db {
+		for l := mgl64.DegToRad(0); l < mgl64.DegToRad(360); l += dl {
 			//x0,y0,z0,u0,v0
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l)))
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l)))
-			vertices = append(vertices, float32(r*math.Sin(b)))
-			vertices = append(vertices, 1, 1)
+			x := float32(r * math.Cos(b) * math.Sin(l))
+			y := float32(r * math.Cos(b) * math.Cos(l))
+			z := float32(r * math.Sin(b))
+			u := float32(1.0)
+			v := float32(1.0)
+			vertices = append(vertices, x, y, z, u, v)
 			indice0 := uint32(len(vertices)/5 - 1)
 
 			//x1,y1,z1,u1,v1
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l)))
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l)))
-			vertices = append(vertices, float32(r*math.Sin(b+db)))
-			vertices = append(vertices, 1, 1)
+			x = float32(r * math.Cos(b+db) * math.Sin(l))
+			y = float32(r * math.Cos(b+db) * math.Cos(l))
+			z = float32(r * math.Sin(b+db))
+			u = float32(1.0)
+			v = float32(1.0)
+			vertices = append(vertices, x, y, z, u, v)
 			indice1 := uint32(len(vertices)/5 - 1)
 
 			//x2,y2,z2,u2,v2
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Sin(l+dl)))
-			vertices = append(vertices, float32(r*math.Cos(b+db)*math.Cos(l+dl)))
-			vertices = append(vertices, float32(r*math.Sin(b+db)))
-			vertices = append(vertices, 1, 1)
+			x = float32(r * math.Cos(b+db) * math.Sin(l+dl))
+			y = float32(r * math.Cos(b+db) * math.Cos(l+dl))
+			z = float32(r * math.Sin(b+db))
+			u = float32(1.0)
+			v = float32(1.0)
+			vertices = append(vertices, x, y, z, u, v)
 			indice2 := uint32(len(vertices)/5 - 1)
 
 			//x3,y3,z3,u3,v3
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Sin(l+dl)))
-			vertices = append(vertices, float32(r*math.Cos(b)*math.Cos(l+dl)))
-			vertices = append(vertices, float32(r*math.Sin(b)))
-			vertices = append(vertices, 1, 1)
+			x = float32(r * math.Cos(b) * math.Sin(l+dl))
+			y = float32(r * math.Cos(b) * math.Cos(l+dl))
+			z = float32(r * math.Sin(b))
+			u = float32(1.0)
+			v = float32(1.0)
+			vertices = append(vertices, x, y, z, u, v)
 			indice3 := uint32(len(vertices)/5 - 1)
 
 			indices = append(indices,
