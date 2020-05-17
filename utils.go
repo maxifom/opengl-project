@@ -153,9 +153,11 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0.1, 0, 0}))
 	}
 	if window.GetKey(glfw.KeyKP7) == glfw.Press {
+		log.Println(objects[currentObject].Position().Z())
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, -0.1}))
 	}
 	if window.GetKey(glfw.KeyKP9) == glfw.Press {
+		log.Println(objects[currentObject].Position().Z())
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, 0.1}))
 	}
 

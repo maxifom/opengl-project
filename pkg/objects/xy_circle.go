@@ -14,14 +14,14 @@ type XYEllipse struct {
 	rotation     float32
 	position     mgl32.Vec3
 	rotationAxes mgl32.Vec3
+	texture      uint32
 }
 
-func NewXYEllipse(cx, cy, rx, ry, z float32, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *XYEllipse {
+func NewXYEllipse(cx, cy, rx, ry, z float32, angle float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture uint32) *XYEllipse {
 	var vertices []float32
 	var indices []uint32
 
-	// Угол = 60 для треугольного
-	da := mgl64.DegToRad(1)
+	da := mgl64.DegToRad(angle)
 	vertices = append(vertices, cx, cy, z, 1, 1)
 	indices = append(indices, 0)
 
@@ -47,6 +47,7 @@ func NewXYEllipse(cx, cy, rx, ry, z float32, position mgl32.Vec3, rotation float
 		rotation:     rotation,
 		position:     position,
 		rotationAxes: rotationAxes,
+		texture:      texture,
 	}
 }
 
@@ -83,7 +84,7 @@ func (c *XYEllipse) DrawMode() uint32 {
 }
 
 func (c *XYEllipse) Texture() uint32 {
-	return 1
+	return c.texture
 }
 
 func (c *XYEllipse) SetRotationAxes(vec3 mgl32.Vec3) {

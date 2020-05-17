@@ -26,7 +26,7 @@ func NewClosedCyllinder(H, R float64, position mgl32.Vec3, rotation float32, rot
 	var xc = 0.0
 	var yc = 0.0
 	r2 := R * R
-	for sinB := -1.0; sinB <= 1.0; sinB += dh {
+	for sinB := -0.5; sinB <= 0.5; sinB += dh {
 		h := float32(H * sinB)
 		for x := 0.0; x <= R; x += dx {
 			y := math.Sqrt(r2 - x*x)

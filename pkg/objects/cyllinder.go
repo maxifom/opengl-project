@@ -14,16 +14,16 @@ type Cyllinder struct {
 	rotation     float32
 	position     mgl32.Vec3
 	rotationAxes mgl32.Vec3
+	texture      uint32
 }
 
-func NewCyllinder(H, Rx, Ry float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Cyllinder {
+func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture uint32) []Object {
 	var vertices []float32
 	var indices []uint32
 
-	dh := H / 200.0
-	// Угол = 60 для треугольного
-	dl := mgl64.DegToRad(1)
-	for h := -0.5; h < 0.5; h += dh {
+	dh := 2 / 200.0
+	dl := mgl64.DegToRad(angle)
+	for h := -1.0; h < 1; h += dh {
 		for l := mgl64.DegToRad(0); l < mgl64.DegToRad(360); l += dl {
 			//x0,y0,z0,u0,v0
 			vertices = append(vertices, float32(Rx*math.Sin(l)))
@@ -60,13 +60,25 @@ func NewCyllinder(H, Rx, Ry float64, position mgl32.Vec3, rotation float32, rota
 		}
 	}
 
-	return &Cyllinder{
-		vertices:     vertices,
-		indices:      indices,
-		rotation:     rotation,
-		position:     position,
-		rotationAxes: rotationAxes,
+	objects := []Object{
+		&Cyllinder{
+			vertices:     vertices,
+			indices:      indices,
+			rotation:     rotation,
+			position:     position,
+			rotationAxes: rotationAxes,
+			texture:      texture,
+		},
 	}
+
+	if enableTop {
+		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-H), angle, position, rotation, rotationAxes, texture))
+	}
+	if enableBottom {
+		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-0.6*H), angle, position, rotation, rotationAxes, texture))
+	}
+
+	return objects
 }
 
 func (c *Cyllinder) Vertices() []float32 {
@@ -102,7 +114,7 @@ func (c *Cyllinder) DrawMode() uint32 {
 }
 
 func (c *Cyllinder) Texture() uint32 {
-	return 1
+	return c.texture
 }
 
 func (c *Cyllinder) SetRotationAxes(vec3 mgl32.Vec3) {

@@ -24,7 +24,9 @@ func init() {
 }
 
 func main() {
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 25}, mgl32.Vec3{0, 1, 0})
+	print(1)
+	print(1)
+	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 10}, mgl32.Vec3{0, 1, 0})
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -113,6 +115,10 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	_, err = newTexture("blue.jpg", 2)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	// Configure the vertex data
 	var vao uint32
@@ -121,14 +127,29 @@ func main() {
 
 	var objs []objects.Object
 
+	//objs = append(objs, objects.NewCyllinder(27, 0.8, 0.8, 1, true, true, mgl32.Vec3{0, -0.7, 1.6}, 0, mgl32.Vec3{0, 0, 0}, 2)...)
+	//objs = append(objs, objects.NewCyllinder(27, 0.8, 0.8, 1, true, true, mgl32.Vec3{0, 1.5, 1.6}, 0, mgl32.Vec3{0, 0, 0}, 2)...)
+	//objs = append(objs, objects.NewCyllinder(27, 0.5, 0.5, 1, true, true, mgl32.Vec3{0, -3, 1.6}, 0, mgl32.Vec3{0, 0, 0}, 2)...)
+	//objs = append(objs, objects.NewCyllinder(27, 0.5, 0.5, 1, true, true, mgl32.Vec3{0, 3.5, 1.6}, 0, mgl32.Vec3{0, 0, 0}, 2)...)
+
+	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -15}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -15}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -15}, 0, mgl32.Vec3{0, 0, 0}))
+
+	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -25}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -25}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -25}, 0, mgl32.Vec3{0, 0, 0}))
+	//objs = append(objs, objects.NewTorus(1.45, 0.2, mgl32.Vec3{0, 0, -12.5}, 0, mgl32.Vec3{0, 0, 0}))
+
+	objs = append(objs, objects.NewCyllinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1)...)
+
 	//objs = append(objs, objects.NewParallelepiped(5, 4, 2, mgl32.Vec3{12, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewCube(1, mgl32.Vec3{-10, 0, 0}, 0, mgl32.Vec3{1, 0, 0}))
 	//objs = append(objs, objects.NewBall(1, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
-	objs = append(objs, objects.NewCyllinder(1, 1, 3, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	//objs = append(objs, objects.NewClosedCyllinder(1, 2, mgl32.Vec3{0, 2, 0}, 0, mgl32.Vec3{0, 1, 0}))
 	//objs = append(objs, objects.NewTorus(1, 0.2, mgl32.Vec3{0, 5, 0}, 0, mgl32.Vec3{0, 0, 1}))
 
-	objs = append(objs, objects.NewXYEllipse(0, 0, 3, 1, 0, mgl32.Vec3{0, 0, 0}, 90, mgl32.Vec3{0, 0, 1}))
+	//objs = append(objs, objects.NewXYEllipse(0, 0, 3, 1, 0, 1, mgl32.Vec3{0, 0, 0}, 90, mgl32.Vec3{0, 0, 1}))
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)

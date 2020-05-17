@@ -100,7 +100,7 @@ func (c *Torus) DrawMode() uint32 {
 }
 
 func (c *Torus) Texture() uint32 {
-	return 1
+	return 2
 }
 
 func (c *Torus) SetRotationAxes(vec3 mgl32.Vec3) {
