@@ -23,11 +23,19 @@ func init() {
 }
 
 func main() {
-	print(1)
-	print(1)
-	print(1)
-	print(1)
-	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 10}, mgl32.Vec3{0, 1, 0})
+	c := Camera{
+		Yaw:              -181.3996,
+		Pitch:            -75.599976,
+		MovementSpeed:    5,
+		MouseSensitivity: 0.1,
+		Zoom:             45,
+		Position:         mgl32.Vec3{1.470662, 25.630522, -17.766178},
+		Front:            mgl32.Vec3{-0.2486161, -0.96858305, 0.0060743378},
+		Up:               mgl32.Vec3{-0.9682941, 0.2486903, 0.023657942},
+		Right:            mgl32.Vec3{-0.024425311, 0, -0.9997017},
+		WorldUp:          mgl32.Vec3{0, 1, 0},
+	}
+
 	var lastXPosition *float64
 	var lastYPosition *float64
 
@@ -100,7 +108,7 @@ func main() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	_, err = newTexture("tank.jpg", 0)
+	_, err = newTexture("yellow.png", 0)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -108,7 +116,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_, err = newTexture("blue.jpg", 2)
+
+	_, err = newTexture("black.png", 2)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	_, err = newTexture("black_wheel.png", 3)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -119,22 +133,23 @@ func main() {
 
 	var objs []objects.Object
 
-	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -20}, -90, mgl32.Vec3{1, 0, 0}, 1)...)
-	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -18.9}, -90, mgl32.Vec3{1, 0, 0}, 1)...)
+	// Пушки
+	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -20}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
+	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -18.9}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
 
 	objs = append(objs, objects.NewConicalFrustrum(10, 3, 1, 1, true, true, mgl32.Vec3{-11, 0.3, -19.5}, -90, mgl32.Vec3{0, 1, 0}, 2)...)
 
 	// Колеса
-	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -15}, 0, mgl32.Vec3{0, 0, 0}))
-	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -15}, 0, mgl32.Vec3{0, 0, 0}))
-	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -15}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -15}, 0, mgl32.Vec3{0, 0, 0}, 3))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -15}, 0, mgl32.Vec3{0, 0, 0}, 3))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -15}, 0, mgl32.Vec3{0, 0, 0}, 3))
 
-	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -25}, 0, mgl32.Vec3{0, 0, 0}))
-	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -25}, 0, mgl32.Vec3{0, 0, 0}))
-	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -25}, 0, mgl32.Vec3{0, 0, 0}))
+	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -25}, 0, mgl32.Vec3{0, 0, 0}, 3))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -25}, 0, mgl32.Vec3{0, 0, 0}, 3))
+	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -25}, 0, mgl32.Vec3{0, 0, 0}, 3))
 
 	// Основание
-	objs = append(objs, objects.NewCyllinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1)...)
+	objs = append(objs, objects.NewCyllinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1, 2, 2)...)
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -188,8 +203,6 @@ func main() {
 			// Зум камеры
 			projection = mgl32.Perspective(mgl32.DegToRad(c.Zoom), float32(windowWidth)/windowHeight, 0.1, 100.0)
 			gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-			//TODO: DEBUG
-			//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 			gl.DrawElements(object.DrawMode(), int32(len(i)/5), gl.UNSIGNED_INT, nil)
 		}
 

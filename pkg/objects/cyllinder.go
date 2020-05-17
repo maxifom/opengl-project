@@ -4,7 +4,6 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/go-gl/mathgl/mgl64"
-	"log"
 	"math"
 )
 
@@ -18,7 +17,7 @@ type Cyllinder struct {
 	texture      uint32
 }
 
-func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture uint32) []Object {
+func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture, topTexture, botTexture uint32) []Object {
 	var vertices []float32
 	var indices []uint32
 
@@ -73,10 +72,10 @@ func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, positi
 	}
 
 	if enableTop {
-		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-H), angle, position, rotation, rotationAxes, texture))
+		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-H), angle, position, rotation, rotationAxes, topTexture))
 	}
 	if enableBottom {
-		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-0.6*H), angle, position, rotation, rotationAxes, texture))
+		objects = append(objects, NewXYEllipse(0, 0, float32(Rx), float32(Ry), float32(-0.6*H), angle, position, rotation, rotationAxes, botTexture))
 	}
 
 	return objects
@@ -95,7 +94,6 @@ func (c *Cyllinder) Position() mgl32.Vec3 {
 }
 
 func (c *Cyllinder) SetPosition(vec3 mgl32.Vec3) {
-	log.Println(vec3)
 	c.position = vec3
 }
 

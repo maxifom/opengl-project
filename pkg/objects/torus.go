@@ -12,9 +12,10 @@ type Torus struct {
 	rotation     float32
 	position     mgl32.Vec3
 	rotationAxes mgl32.Vec3
+	texture      uint32
 }
 
-func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3) *Torus {
+func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture uint32) *Torus {
 	var vertices []float32
 	var indices []uint32
 
@@ -64,6 +65,7 @@ func NewTorus(R, r float64, position mgl32.Vec3, rotation float32, rotationAxes 
 		rotation:     rotation,
 		position:     position,
 		rotationAxes: rotationAxes,
+		texture:      texture,
 	}
 }
 
@@ -100,7 +102,7 @@ func (c *Torus) DrawMode() uint32 {
 }
 
 func (c *Torus) Texture() uint32 {
-	return 2
+	return c.texture
 }
 
 func (c *Torus) SetRotationAxes(vec3 mgl32.Vec3) {

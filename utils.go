@@ -136,7 +136,6 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 		} else {
 			currentObject++
 		}
-		log.Println(currentObject)
 		lastTimeChangedCurrentObject = time.Now()
 	}
 
@@ -147,18 +146,15 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, -0.1, 0}))
 	}
 	if window.GetKey(glfw.KeyLeft) == glfw.Press {
-		log.Println(objects[currentObject].Position().X())
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{-0.1, 0, 0}))
 	}
 	if window.GetKey(glfw.KeyRight) == glfw.Press {
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0.1, 0, 0}))
 	}
 	if window.GetKey(glfw.KeyKP7) == glfw.Press {
-		log.Println(objects[currentObject].Position().Z())
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, -0.1}))
 	}
 	if window.GetKey(glfw.KeyKP9) == glfw.Press {
-		log.Println(objects[currentObject].Position().Z())
 		objects[currentObject].SetPosition(objects[currentObject].Position().Add(mgl32.Vec3{0, 0, 0.1}))
 	}
 
@@ -190,6 +186,10 @@ func ProcessInput(camera *Camera, window *glfw.Window, deltaTime float32, object
 		}
 		objects[currentObject].SetRotationAxes(mgl32.Vec3{1, 0, 0})
 		objects[currentObject].SetRotation(objects[currentObject].Rotation() + 1)
+	}
+
+	if window.GetKey(glfw.KeyC) == glfw.Press {
+		log.Printf("%#v", camera)
 	}
 }
 

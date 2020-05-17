@@ -4,7 +4,6 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/go-gl/mathgl/mgl64"
-	"log"
 	"math"
 )
 
@@ -24,7 +23,6 @@ func NewConicalFrustrum(H, Rmax, Rmin, angle float64, enableTop, enableBottom bo
 
 	var r = Rmax
 	dr := (Rmax - Rmin) / 100
-	log.Println(dr)
 	dh := 2. / 500
 	dl := mgl64.DegToRad(angle)
 	for h := -1.0; h < 1; h += dh {
@@ -99,7 +97,6 @@ func (c *ConicalFrustrum) Position() mgl32.Vec3 {
 }
 
 func (c *ConicalFrustrum) SetPosition(vec3 mgl32.Vec3) {
-	log.Println("pos ", c.position)
 	c.position = vec3
 }
 
@@ -112,7 +109,6 @@ func (c *ConicalFrustrum) RotationAxes() mgl32.Vec3 {
 }
 
 func (c *ConicalFrustrum) SetRotation(f float32) {
-	log.Println(c.rotationAxes, c.rotation)
 	c.rotation = f
 }
 
