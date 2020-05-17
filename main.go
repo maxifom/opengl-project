@@ -82,7 +82,6 @@ func main() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
-	// Configure the vertex and fragment shaders
 	vertexShader := ReadShaderFromFile("shaders/vertex")
 	fragmentShader := ReadShaderFromFile("shaders/fragment")
 	program, err := newProgram(vertexShader, fragmentShader)
