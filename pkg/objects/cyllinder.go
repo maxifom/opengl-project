@@ -4,6 +4,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/go-gl/mathgl/mgl64"
+	"log"
 	"math"
 )
 
@@ -94,6 +95,7 @@ func (c *Cyllinder) Position() mgl32.Vec3 {
 }
 
 func (c *Cyllinder) SetPosition(vec3 mgl32.Vec3) {
+	log.Println(vec3)
 	c.position = vec3
 }
 

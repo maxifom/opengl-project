@@ -119,6 +119,9 @@ func main() {
 
 	var objs []objects.Object
 
+	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -20}, -90, mgl32.Vec3{1, 0, 0}, 1)...)
+	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -18.9}, -90, mgl32.Vec3{1, 0, 0}, 1)...)
+
 	objs = append(objs, objects.NewConicalFrustrum(10, 3, 1, 1, true, true, mgl32.Vec3{-11, 0.3, -19.5}, -90, mgl32.Vec3{0, 1, 0}, 2)...)
 
 	// Колеса
