@@ -108,21 +108,21 @@ func main() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	_, err = newTexture("yellow.png", 0)
+	_, err = newTexture("textures/yellow.png", 0)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_, err = newTexture("green.png", 1)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	_, err = newTexture("black.png", 2)
+	_, err = newTexture("textures/green.png", 1)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	_, err = newTexture("black_wheel.png", 3)
+	_, err = newTexture("textures/black.png", 2)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	_, err = newTexture("textures/black_wheel.png", 3)
 	if err != nil {
 		log.Fatalln(err)
 	}
