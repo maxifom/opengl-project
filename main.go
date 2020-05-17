@@ -19,11 +19,12 @@ const windowWidth = 800
 const windowHeight = 600
 
 func init() {
-	// GLFW event handling must run on the main OS thread
 	runtime.LockOSThread()
 }
 
 func main() {
+	print(1)
+	print(1)
 	print(1)
 	print(1)
 	c := NewCamera(-90, 0, mgl32.Vec3{0, 0, 10}, mgl32.Vec3{0, 1, 0})
@@ -66,15 +67,9 @@ func main() {
 		c.ProcessMouseScroll(float32(yoff))
 	})
 
-	// Initialize Glow
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
-
-	// TODO: Anti-Aliasing
-	// Замедляет
-	//glfw.WindowHint(glfw.Samples, 4)
-	//gl.Enable(gl.MULTISAMPLE)
 
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
@@ -105,12 +100,10 @@ func main() {
 
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
-	// Load the texture
 	_, err = newTexture("tank.jpg", 0)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	//_, err = newTexture("blue.jpg", 1)
 	_, err = newTexture("green.png", 1)
 	if err != nil {
 		log.Fatalln(err)
@@ -120,13 +113,15 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Configure the vertex data
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
 
 	var objs []objects.Object
 
+	objs = append(objs, objects.NewConicalFrustrum(10, 3, 1, 1, true, true, mgl32.Vec3{-11, 0.3, -19.5}, -90, mgl32.Vec3{0, 1, 0}, 2)...)
+
+	// Колеса
 	objs = append(objs, objects.NewTorus(0.9, 0.75, mgl32.Vec3{0, 0, -15}, 0, mgl32.Vec3{0, 0, 0}))
 	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -15}, 0, mgl32.Vec3{0, 0, 0}))
 	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -15}, 0, mgl32.Vec3{0, 0, 0}))
@@ -135,8 +130,8 @@ func main() {
 	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, 3, -25}, 0, mgl32.Vec3{0, 0, 0}))
 	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -25}, 0, mgl32.Vec3{0, 0, 0}))
 
+	// Основание
 	objs = append(objs, objects.NewCyllinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1)...)
-
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
@@ -153,7 +148,6 @@ func main() {
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*float32Size, gl.PtrOffset(3*float32Size))
 
-	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
@@ -169,7 +163,6 @@ func main() {
 
 		ProcessInput(&c, window, float32(elapsed), objs)
 
-		// Render
 		gl.UseProgram(program)
 		for _, object := range objs {
 			v := object.Vertices()
@@ -200,7 +193,6 @@ func main() {
 		mat4 := c.GetViewMatrix()
 		gl.UniformMatrix4fv(cameraUniform, 1, false, &mat4[0])
 
-		// Maintenance
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}

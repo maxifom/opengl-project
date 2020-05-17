@@ -27,7 +27,6 @@ func NewBall(r float64, pos mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec
 	dl := mgl64.DegToRad(1.0)
 	// db, dl - шаги широты и долготы
 
-	// TODO: image texture will not work, only solid color (в книге описано как сделать)
 	for b := mgl64.DegToRad(0); b < mgl64.DegToRad(1440); b += db {
 		for l := mgl64.DegToRad(0); l < mgl64.DegToRad(360); l += dl {
 			//x0,y0,z0,u0,v0

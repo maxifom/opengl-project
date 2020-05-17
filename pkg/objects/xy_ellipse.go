@@ -4,6 +4,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/go-gl/mathgl/mgl64"
+	"log"
 	"math"
 )
 
@@ -64,6 +65,7 @@ func (c *XYEllipse) Position() mgl32.Vec3 {
 }
 
 func (c *XYEllipse) SetPosition(vec3 mgl32.Vec3) {
+	log.Println(vec3)
 	c.position = vec3
 }
 
@@ -72,6 +74,7 @@ func (c *XYEllipse) Rotation() float32 {
 }
 
 func (c *XYEllipse) SetRotation(f float32) {
+	log.Println(c.rotationAxes, f)
 	c.rotation = f
 }
 
