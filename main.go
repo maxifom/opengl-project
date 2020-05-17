@@ -134,8 +134,8 @@ func main() {
 	var objs []objects.Object
 
 	// Пушки
-	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -20}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
-	objs = append(objs, objects.NewCyllinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -18.9}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
+	objs = append(objs, objects.NewCylinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -20}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
+	objs = append(objs, objects.NewCylinder(10, 0.2, 0.2, 1, true, true, mgl32.Vec3{-3.3, 11, -18.9}, -90, mgl32.Vec3{1, 0, 0}, 0, 0, 0)...)
 
 	objs = append(objs, objects.NewConicalFrustrum(10, 3, 1, 1, true, true, mgl32.Vec3{-11, 0.3, -19.5}, -90, mgl32.Vec3{0, 1, 0}, 2)...)
 
@@ -149,7 +149,7 @@ func main() {
 	objs = append(objs, objects.NewTorus(0.75, 0.5, mgl32.Vec3{0, -3, -25}, 0, mgl32.Vec3{0, 0, 0}, 3))
 
 	// Основание
-	objs = append(objs, objects.NewCyllinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1, 2, 2)...)
+	objs = append(objs, objects.NewCylinder(25, 2, 5, 1, true, true, mgl32.Vec3{0, 0, 0}, 0, mgl32.Vec3{0, 1, 0}, 1, 2, 2)...)
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)

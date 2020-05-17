@@ -8,7 +8,7 @@ import (
 )
 
 // Цилиндр без крышек
-type Cyllinder struct {
+type Cylinder struct {
 	vertices     []float32
 	indices      []uint32
 	rotation     float32
@@ -17,7 +17,7 @@ type Cyllinder struct {
 	texture      uint32
 }
 
-func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture, topTexture, botTexture uint32) []Object {
+func NewCylinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, position mgl32.Vec3, rotation float32, rotationAxes mgl32.Vec3, texture, topTexture, botTexture uint32) []Object {
 	var vertices []float32
 	var indices []uint32
 
@@ -61,7 +61,7 @@ func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, positi
 	}
 
 	objects := []Object{
-		&Cyllinder{
+		&Cylinder{
 			vertices:     vertices,
 			indices:      indices,
 			rotation:     rotation,
@@ -81,42 +81,42 @@ func NewCyllinder(H, Rx, Ry, angle float64, enableTop, enableBottom bool, positi
 	return objects
 }
 
-func (c *Cyllinder) Vertices() []float32 {
+func (c *Cylinder) Vertices() []float32 {
 	return c.vertices
 }
 
-func (c *Cyllinder) Indices() []uint32 {
+func (c *Cylinder) Indices() []uint32 {
 	return c.indices
 }
 
-func (c *Cyllinder) Position() mgl32.Vec3 {
+func (c *Cylinder) Position() mgl32.Vec3 {
 	return c.position
 }
 
-func (c *Cyllinder) SetPosition(vec3 mgl32.Vec3) {
+func (c *Cylinder) SetPosition(vec3 mgl32.Vec3) {
 	c.position = vec3
 }
 
-func (c *Cyllinder) Rotation() float32 {
+func (c *Cylinder) Rotation() float32 {
 	return c.rotation
 }
 
-func (c *Cyllinder) SetRotation(f float32) {
+func (c *Cylinder) SetRotation(f float32) {
 	c.rotation = f
 }
 
-func (c *Cyllinder) RotationAxes() mgl32.Vec3 {
+func (c *Cylinder) RotationAxes() mgl32.Vec3 {
 	return c.rotationAxes
 }
 
-func (c *Cyllinder) DrawMode() uint32 {
+func (c *Cylinder) DrawMode() uint32 {
 	return gl.TRIANGLES
 }
 
-func (c *Cyllinder) Texture() uint32 {
+func (c *Cylinder) Texture() uint32 {
 	return c.texture
 }
 
-func (c *Cyllinder) SetRotationAxes(vec3 mgl32.Vec3) {
+func (c *Cylinder) SetRotationAxes(vec3 mgl32.Vec3) {
 	c.rotationAxes = vec3
 }
